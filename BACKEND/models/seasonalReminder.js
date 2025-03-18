@@ -1,48 +1,12 @@
 const mongoose = require("mongoose");
 
-const seasonalReminderSchema = new mongoose.Schema(
-  {
-    itemName: {
-      type: String,
-      required: true,
-    },
-    season: {
-      type: String,
-      required: true,
-    },
-    reminderDate: {
-      type: Date,
-      required: true,
-    },
-    message: {
-      type: String,
-      required: true,
-    },
-    userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
-  },
-  { timestamps: true }
-);
+const SeasonalReminderSchema = new mongoose.Schema({
+    season: { type: String, required: true }, // ✅ Season Name
+    items: { type: [String], required: true }, // ✅ List of items
+    reminderDate: { type: Date, required: true }, // ✅ Reminder Date
+    message: { type: String, required: true }, // ✅ Custom message with {item}
+    month: { type: Number, required: true }, // ✅ Month (April = 4, Dec = 12)
+    active: { type: Boolean, default: true }, // ✅ Active status
+});
 
-const SeasonalReminder = mongoose.model("SeasonalReminder", seasonalReminderSchema);
-
-// ✅ Fix: Define seasonalReminders properly
-const seasonalReminders = [
-  {
-    season: "Sinhala and Tamil New Year",
-    items: ["Oil", "Sugar", "Flour"],
-    startDate: new Date("2025-04-01"),
-    endDate: new Date("2025-04-15"),
-  },
-  {
-    season: "Christmas",
-    items: ["Cake Ingredients", "Wine", "Decorations"],
-    startDate: new Date("2025-12-01"),
-    endDate: new Date("2025-12-25"),
-  },
-];
-
-module.exports = { SeasonalReminder, seasonalReminders };
+module.exports = mongoose.model("SeasonalReminder", SeasonalReminderSchema);

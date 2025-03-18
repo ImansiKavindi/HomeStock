@@ -1,22 +1,8 @@
 const mongoose = require("mongoose");
 
-const shoppingListSchema = new mongoose.Schema(
-    {
-        itemName: {
-            type: String,
-            required: true,
-        },
-        season: {
-            type: String,
-            required: true,
-        },
-        userId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "User",
-            required: true,
-        },
-    },
-    { timestamps: true }
-);
+const shoppingListSchema = new mongoose.Schema({
+    items: [{ type: String, required: true }], // ✅ Ensure "items" is an array
+    status: { type: String, default: "pending" },
+}, { timestamps: true });
 
 module.exports = mongoose.model("ShoppingList", shoppingListSchema);

@@ -1,78 +1,55 @@
-require("dotenv").config();
 const mongoose = require("mongoose");
-const { SeasonalReminder } = require("./models/seasonalReminder");
+const dotenv = require("dotenv");
+const SeasonalReminder = require("./models/seasonalReminder"); // ✅ Import model
 
-// ✅ Connect to MongoDB
-mongoose
-    .connect(process.env.MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => console.log("✅ MongoDB Connected"))
-    .catch((err) => console.error("❌ MongoDB Connection Error:", err));
+dotenv.config(); // Load environment variables
 
-// ✅ Insert Hardcoded Seasonal Data
-const insertHardcodedSeasonalReminders = async () => {
+const today = new Date();
+
+const seasonalReminders = [
+    {
+        season: "Sinhala and Tamil New Year",
+        items: ["Oil", "Sugar", "Flour"],
+        reminderDate: new Date(today.getFullYear(), today.getMonth(), today.getDate()), // ✅ Today's date
+        message: "Sinhala and Tamil New Year is coming! Do you need more {item}?",
+        month: today.getMonth() + 1, // ✅ Current month
+        active: true,
+    },
+    {
+        season: "Christmas",
+        items: ["Cake", "Wine", "Decorations"],
+        reminderDate: new Date(today.getFullYear(), today.getMonth(), today.getDate()), // ✅ Today's date
+        message: "Christmas is coming! Do you need more {item}?",
+        month: today.getMonth() + 1, // ✅ Current month
+        active: true,
+    },
+];
+
+// ✅ Connect to MongoDB directly
+const connectDB = async () => {
     try {
-        const count = await SeasonalReminder.countDocuments();
-        console.log(`📊 Existing Seasonal Reminders Count: ${count}`);
-
-        if (count === 0) {
-            console.log("⚡ Inserting hardcoded seasonal reminders...");
-
-            const seasonalReminders = [
-                {
-                    itemName: "Oil",
-                    season: "Sinhala and Tamil New Year",
-                    reminderDate: new Date("2025-04-01"),
-                    message: "Do you need more oil for New Year?",
-                    userId: "65f123456789abcd12345678", // Replace with actual user ID
-                },
-                {
-                    itemName: "Sugar",
-                    season: "Sinhala and Tamil New Year",
-                    reminderDate: new Date("2025-04-01"),
-                    message: "Do you need more sugar for New Year?",
-                    userId: "65f123456789abcd12345678",
-                },
-                {
-                    itemName: "Flour",
-                    season: "Sinhala and Tamil New Year",
-                    reminderDate: new Date("2025-04-01"),
-                    message: "Do you need more flour for New Year?",
-                    userId: "65f123456789abcd12345678",
-                },
-                {
-                    itemName: "Cake Ingredients",
-                    season: "Christmas",
-                    reminderDate: new Date("2025-12-01"),
-                    message: "Do you need more cake ingredients for Christmas?",
-                    userId: "65f123456789abcd12345678",
-                },
-                {
-                    itemName: "Wine",
-                    season: "Christmas",
-                    reminderDate: new Date("2025-12-01"),
-                    message: "Do you need more wine for Christmas?",
-                    userId: "65f123456789abcd12345678",
-                },
-                {
-                    itemName: "Decorations",
-                    season: "Christmas",
-                    reminderDate: new Date("2025-12-01"),
-                    message: "Do you need more decorations for Christmas?",
-                    userId: "65f123456789abcd12345678",
-                },
-            ];
-
-            await SeasonalReminder.insertMany(seasonalReminders);
-            console.log("✅ Seasonal reminders inserted successfully!");
-        } else {
-            console.log("⏩ Seasonal reminders already exist. No new data inserted.");
-        }
+        await mongoose.connect(process.env.MONGODB_URL, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
+        console.log("✅ MongoDB Connected!");
     } catch (error) {
-        console.error("❌ Error inserting seasonal reminders:", error);
-    } finally {
-        mongoose.connection.close();
+        console.error("❌ Error connecting to MongoDB:", error);
+        process.exit(1);
     }
 };
 
-// ✅ Run the function
-insertHardcodedSeasonalReminders();
+const seedReminders = async () => {
+    try {
+        await connectDB(); // ✅ Connect to MongoDB
+        await SeasonalReminder.deleteMany(); // ✅ Clear old data
+        await SeasonalReminder.insertMany(seasonalReminders); // ✅ Insert new data
+        console.log("✅ Seasonal reminders seeded successfully!");
+        process.exit();
+    } catch (error) {
+        console.error("❌ Error seeding seasonal reminders:", error);
+        process.exit(1);
+    }
+};
+
+seedReminders();
