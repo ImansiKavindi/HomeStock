@@ -1,51 +1,37 @@
 const ProductModel = require("../models/ProductModel");
-const cloudinary = require("cloudinary").v2;
 const multer = require("multer");
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const path = require("path");
 
-// Cloudinary configuration
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
-
-// Set up Cloudinary storage for multer
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: 'products', // Folder in Cloudinary
-    allowed_formats: ['jpg', 'jpeg', 'png'],
+// Multer Storage Setup (Local)
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/'); // Directory where the images will be saved
   },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname)); // Unique filename based on timestamp
+  }
 });
 
 const upload = multer({ storage }).single("P_Image");
 
-// Create a new product
+// ✅ Create a new product
 exports.createProduct = async (req, res) => {
-  console.log('Starting image upload...');
-  
   upload(req, res, async function (err) {
     if (err) {
-      console.error('Image upload error:', err);
-      return res.status(400).json({ success: false, message: "Image upload failed" });
+      return res.status(400).json({ success: false, message: "Image upload failed", error: err });
     }
 
-    console.log('Image upload successful:', req.file);
-
     try {
-      const { P_name, Category, Manufacture, Price, Quantity, Description, Supplier_ID } = req.body;
-      const P_Image = req.file ? req.file.path : null; // Cloudinary file path
-      
+      const { P_name, Category, Price, Quantity, Expire_Date } = req.body;
+      const P_Image = req.file ? req.file.path : null; // Store local image path
+
       const product = new ProductModel({
         P_name,
         P_Image,
         Category,
-        Manufacture,
         Price,
         Quantity,
-        Description,
-        Supplier_ID,
+        Expire_Date,
       });
 
       await product.save();
@@ -56,18 +42,17 @@ exports.createProduct = async (req, res) => {
   });
 };
 
-
-// Read all products (Get all products)
+// ✅ Get all products
 exports.getAllProducts = async (req, res) => {
   try {
-    const products = await ProductModel.find(); // Get all products
+    const products = await ProductModel.find();
     res.status(200).json({ success: true, products });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
-// Get a single product by ID (for details page or other use)
+// ✅ Get a single product by ID
 exports.getProductById = async (req, res) => {
   try {
     const product = await ProductModel.findById(req.params.id);
@@ -80,44 +65,36 @@ exports.getProductById = async (req, res) => {
   }
 };
 
-// Update product by ID (including image)
+// ✅ Update product by ID
 exports.updateProduct = async (req, res) => {
-  console.log('Starting image upload...');
-
   upload(req, res, async function (err) {
     if (err) {
-      console.error('Image upload error:', err);
-      return res.status(400).json({ success: false, message: "Image upload failed" });
+      return res.status(400).json({ success: false, message: "Image upload failed", error: err });
     }
 
-    console.log('Image upload successful:', req.file);
-
     try {
-      const { P_name, Category, Manufacture, Price, Quantity, Description, Supplier_ID } = req.body;
-      
-      // Find product by ID
+      const { P_name, Category, Price, Quantity, Expire_Date } = req.body;
       let product = await ProductModel.findById(req.params.id);
       if (!product) {
         return res.status(404).json({ success: false, message: "Product not found" });
       }
 
-      // If new image is uploaded, update image URL
-      const P_Image = req.file ? req.file.path : product.P_Image;
+      // Delete old image if a new one is uploaded
+      if (req.file && product.P_Image) {
+        // Assuming you want to delete the file from local storage
+        const fs = require('fs');
+        fs.unlinkSync(product.P_Image);
+      }
 
-      // Update product fields
-      product = await ProductModel.findByIdAndUpdate(
-        req.params.id,
-        {
-          P_name,
-          P_Image,
-          Category,
-          Price,
-          Quantity,
-          Expire_Date,
-        },
-        { new: true, runValidators: true }
-      );
+      // Update fields
+      product.P_name = P_name || product.P_name;
+      product.P_Image = req.file ? req.file.path : product.P_Image;
+      product.Category = Category || product.Category;
+      product.Price = Price || product.Price;
+      product.Quantity = Quantity || product.Quantity;
+      product.Expire_Date = Expire_Date || product.Expire_Date;
 
+      await product.save();
       res.status(200).json({ success: true, product });
     } catch (error) {
       res.status(500).json({ success: false, message: error.message });
@@ -125,7 +102,7 @@ exports.updateProduct = async (req, res) => {
   });
 };
 
-// Delete product by ID
+// ✅ Delete product by ID
 exports.deleteProduct = async (req, res) => {
   try {
     const product = await ProductModel.findById(req.params.id);
@@ -133,10 +110,10 @@ exports.deleteProduct = async (req, res) => {
       return res.status(404).json({ success: false, message: "Product not found" });
     }
 
-    // Delete the image from Cloudinary (optional, based on your needs)
+    // Delete image from local storage
     if (product.P_Image) {
-      const imagePublicId = product.P_Image.split('/').pop().split('.')[0]; // Extract Cloudinary public ID
-      await cloudinary.uploader.destroy(imagePublicId); // Delete the image from Cloudinary
+      const fs = require('fs');
+      fs.unlinkSync(product.P_Image); // Deleting the image from the 'uploads' folder
     }
 
     await product.deleteOne();
@@ -146,45 +123,33 @@ exports.deleteProduct = async (req, res) => {
   }
 };
 
-
-
-exports.getStockStatusProducts = async (req, res) => {
-  console.log("Request received at /stockstatus");
-  try {
-    const outOfStockProducts = await ProductModel.find({ quantity: 0 });
-    const lowStockProducts = await ProductModel.find({ quantity: { $gt: 0, $lt: 15 } });
-    
-    if (!outOfStockProducts.length && !lowStockProducts.length) {
-      return res.status(404).json({
-        success: false,
-        message: "No products found for the stock status requested"
-      });
-    }
-
-    return res.status(200).json({
-      success: true,
-      data: { outOfStockProducts, lowStockProducts }
-    });
-  } catch (error) {
-    console.error("Error fetching stock status products:", error.message);
-    return res.status(500).json({
-      message: "Error fetching stock status products",
-      error: error.message
-    });
-  }
-};
-
-
-// Get low stock and out of stock products
+// ✅ Get low stock products (Quantity between 1 and 15)
 exports.getLowStockProducts = async (req, res) => {
   try {
     const lowStockProducts = await ProductModel.find({
-      $or: [
-        { Quantity: { $gt: 0, $lt: 16 } },  // Low stock
-        { Quantity: 0 }                    // Out of stock
-      ]
+      Quantity: { $gt: 0, $lt: 16 }
     });
-    res.status(200).json({ success: true, products: lowStockProducts });
+
+    if (!lowStockProducts.length) {
+      return res.status(404).json({ success: false, message: "No low stock products found" });
+    }
+
+    res.status(200).json({ success: true, lowStockProducts });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// ✅ Get out of stock products (Quantity = 0)
+exports.getOutOfStockProducts = async (req, res) => {
+  try {
+    const outOfStockProducts = await ProductModel.find({ Quantity: 0 });
+
+    if (!outOfStockProducts.length) {
+      return res.status(404).json({ success: false, message: "No out of stock products found" });
+    }
+
+    res.status(200).json({ success: true, outOfStockProducts });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

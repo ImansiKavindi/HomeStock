@@ -2,9 +2,9 @@ const express = require("express");
 const router = express.Router();
 const ProductController = require("../controllers/ProductControllers");
 
-
-router.get("/lowstock", ProductController.getLowStockProducts);
-
+// Routes for Low Stock and Out of Stock products
+router.get("/lowstock", ProductController.getLowStockProducts);  // Fetch low stock products
+router.get("/outofstock", ProductController.getOutOfStockProducts);  // Fetch out of stock products
 
 // CRUD routes
 router.post("/create", ProductController.createProduct); // Create
@@ -14,4 +14,3 @@ router.put("/:id", ProductController.updateProduct); // Update
 router.delete("/:id", ProductController.deleteProduct); // Delete
 
 module.exports = router;
-

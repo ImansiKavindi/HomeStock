@@ -1,0 +1,150 @@
+/* General Styling */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+}
+
+body {
+  background-color: #012a039a;
+  color: #333;
+}
+
+/* Navbar Styling */
+.navbar {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 15px 20px;
+  z-index: 1000;
+}
+
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  font-size: 32px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #333;
+}
+
+.logo-img {
+  width: 80px;
+  margin-right: 10px;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+}
+
+.nav-links li {
+  margin: 0 20px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #020202;
+  font-size: 16px;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: #00d400; /* Accent color on hover */
+}
+
+.cta-button {
+  background-color: #1cd400;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: bold;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.cta-button:hover {
+  background-color: #025728;
+}
+
+/* Hero Section Styling */
+/* Hero Section Styling */
+.hero-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  padding: 0 20px;
+}
+
+/* Square Container for Text and Video */
+.square-container {
+  width: 90%; /* Adjust the size to your preference */
+  height: 500px; /* Fixed height to create a square shape */
+  background-color: #f0f0f0; /* Optional background */
+  display: flex;
+  justify-content: space-between; /* Distribute space between text and video */
+  align-items: center; /* Center items vertically */
+  border-radius: 20px;
+  margin-top: 100px;
+  overflow: hidden; /* Prevent video from overflowing */
+}
+
+/* Hero Text Styling */
+.hero-text {
+  flex: 1;
+  padding-right: 100px;
+  text-align: center;
+}
+
+.hero-text h1 {
+  font-size: 48px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.hero-text p {
+  font-size: 22px;
+  margin-bottom: 30px;
+  opacity: 0.8;
+}
+
+.hero-text button {
+  background-color: #024f1e;
+  color: white;
+  font-size: 18px;
+  padding: 12px 24px;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.hero-text button:hover {
+  background-color: #033c1a;
+}
+
+/* Video Container Styling */
+.video-container {
+  flex: 1;
+ 
+}
+
+video {
+  width: 60%;
+  height: 20%;
+  object-fit: cover; /* Ensure the video covers the container area */
+  border-radius: 10px; /* Optional rounded corners */
+}

@@ -1,0 +1,93 @@
+/* General Styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+  }
+  
+  /* Dashboard Container */
+  .dashboard-container {
+    display: flex;
+    height: 100vh;
+    background-color: #f9f9f9;
+  }
+  
+  /* Side Navbar Styling */
+  .side-navbar {
+    width: 250px;
+    background-color: #333;
+    color: white;
+    padding-top: 20px;
+    position: fixed;
+    height: 100%;
+  }
+  
+  .side-navbar ul {
+    list-style: none;
+    padding-left: 0;
+  }
+  
+  .side-navbar li {
+    padding: 20px;
+  }
+  
+  .side-navbar a {
+    text-decoration: none;
+    color: white;
+    font-size: 18px;
+    display: block;
+    transition: background-color 0.3s ease;
+  }
+  
+  .side-navbar a:hover {
+    background-color: #1cd400; /* Accent color on hover */
+  }
+  
+  /* Main Content */
+  .dashboard-content {
+    margin-left: 250px; /* Space for the side navbar */
+    padding: 20px;
+    width: calc(100% - 250px); /* Ensure content doesn't overlap the sidebar */
+  }
+  
+  /* Section Styling */
+  .dashboard-content section {
+    background-color: #fff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .dashboard-content h2 {
+    font-size: 32px;
+    margin-bottom: 15px;
+  }
+  
+  .dashboard-content p {
+    font-size: 18px;
+    line-height: 1.6;
+  }
+  
+  /* Media Queries for Responsiveness */
+  @media (max-width: 768px) {
+    .side-navbar {
+      width: 100%;
+      height: auto;
+      position: relative;
+    }
+  
+    .dashboard-content {
+      margin-left: 0;
+    }
+  
+    .side-navbar li {
+      text-align: center;
+    }
+  
+    .dashboard-content section {
+      margin: 10px 0;
+    }
+  }
+  
