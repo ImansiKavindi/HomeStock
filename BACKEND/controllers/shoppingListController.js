@@ -70,6 +70,32 @@ exports.removeItems = async (req, res) => {
     }
 };
 
+// ✅ Update an item in the shopping list
+exports.updateItem = async (req, res) => {
+    try {
+        const { oldItem, newItem } = req.body;
+
+        let shoppingList = await ShoppingList.findOne({ status: "pending" });
+
+        if (!shoppingList) {
+            return res.status(404).json({ message: "No shopping list found." });
+        }
+
+        const itemIndex = shoppingList.items.indexOf(oldItem);
+        if (itemIndex === -1) {
+            return res.status(400).json({ message: "Item not found in the shopping list." });
+        }
+
+        shoppingList.items[itemIndex] = newItem;
+        await shoppingList.save();
+
+        res.json({ message: "Item updated successfully!", shoppingList });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+
 // ✅ Clear the entire shopping list
 exports.clearShoppingList = async (req, res) => {
     try {

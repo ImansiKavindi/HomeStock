@@ -6,6 +6,7 @@ const shoppingListController = require("../controllers/shoppingListController");
 router.post("/add", shoppingListController.addItem);
 router.get("/", shoppingListController.getShoppingList);
 router.delete("/remove", shoppingListController.removeItems);
+router.put("/update", shoppingListController.updateItem);
 router.delete("/clear", shoppingListController.clearShoppingList);
 router.get("/download-pdf", shoppingListController.downloadPDF);
 
