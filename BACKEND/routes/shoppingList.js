@@ -22,4 +22,19 @@ router.post("/add", async (req, res) => {
     }
 });
 
+// ✅ Get the current shopping list
+router.get("/", async (req, res) => {
+    try {
+        const shoppingList = await ShoppingList.findOne({ status: "pending" });
+
+        if (!shoppingList) {
+            return res.status(404).json({ message: "No shopping list found" });
+        }
+
+        res.json(shoppingList);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 module.exports = router;

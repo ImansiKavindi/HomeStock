@@ -25,12 +25,15 @@ app.use(express.json());
 const productRoutes = require('./routes/ProductRoutes');
 const seasonalReminder = require("./routes/seasonalReminder");
 const shoppingListRoutes = require("./routes/shoppingList"); 
+const reminderRoutes = require("./routes/reminderRoutes");
 
 
 // API Routes
 app.use('/api/products', productRoutes);
 app.use("/api/seasonal-reminders", seasonalReminder);
 app.use("/api/shopping-list", shoppingListRoutes);
+app.use("/api/reminders", reminderRoutes);
+
 
 // MongoDB Connection
 const URL = process.env.MONGODB_URL;
