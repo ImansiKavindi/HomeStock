@@ -18,7 +18,7 @@ const ProductList = () => {
     try {
       const res = await axios.get(API_URL);
       setProducts(res.data.products);
-      setFilteredProducts(res.data.products); // Initialize filtered products
+      setFilteredProducts(res.data.products);
     } catch (error) {
       console.error("Error fetching products:", error);
     }
@@ -77,7 +77,7 @@ const ProductList = () => {
     const currentDate = new Date();
     const expiryDate = new Date(expireDate);
     const timeDiff = expiryDate - currentDate;
-    const daysLeft = Math.ceil(timeDiff / (1000 * 3600 * 24)); // Convert time difference to days
+    const daysLeft = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
     if (daysLeft < 0) {
       return "Already expired";
@@ -94,31 +94,28 @@ const ProductList = () => {
   const filterProducts = (category, expireDate) => {
     let filtered = products;
 
-    // Filter by category
     if (category) {
       filtered = filtered.filter((product) => product.Category === category);
     }
 
-    // Filter by expiry date
     if (expireDate) {
       filtered = filtered.filter((product) => {
         const productExpireDate = new Date(product.Expire_Date);
         const selectedDate = new Date(expireDate);
 
-        // Add expiry status message based on the expiration date
         let expiryMessage = getExpiryStatusMessage(product.Expire_Date);
-        product.expiryMessage = expiryMessage; // Add the message to the product
+        product.expiryMessage = expiryMessage;
 
-        return productExpireDate >= selectedDate; // Show products that expire today or later
+        return productExpireDate >= selectedDate;
       });
     }
 
-    setFilteredProducts(filtered); // Update filtered products state
+    setFilteredProducts(filtered);
   };
 
   // Handle add product (navigate to add product page)
   const handleAddProduct = () => {
-    window.location.href = "/add-product"; // Modify this based on your route for adding a product
+    window.location.href = "/add-product";
   };
 
   useEffect(() => {
@@ -127,22 +124,20 @@ const ProductList = () => {
 
   return (
     <div className="product-container">
-        <Sidebar />
+      <Sidebar />
       <h2>Product List</h2>
 
       {/* Category Filter */}
       <select value={selectedCategory} onChange={handleCategoryChange}>
         <option value="">All Categories</option>
-        {/* Add other categories dynamically or hardcode */}
         <option value="Pantry Staples">Pantry Staples</option>
-          <option value="Refrigerated Items">Refrigerated Items</option>
-          <option value="Fruits & Vegetables">Fruits & Vegetables</option>
-          <option value="Cleaning Supplies">Cleaning Supplies</option>
-          <option value="Personal Care & Hygiene">Personal Care & Hygiene</option>
-          <option value="Health & First Aid">Health & First Aid</option>
-          <option value="Home Maintenance & Tools">Home Maintenance & Tools</option>
-          <option value="Other">Other</option>
-
+        <option value="Refrigerated Items">Refrigerated Items</option>
+        <option value="Fruits & Vegetables">Fruits & Vegetables</option>
+        <option value="Cleaning Supplies">Cleaning Supplies</option>
+        <option value="Personal Care & Hygiene">Personal Care & Hygiene</option>
+        <option value="Health & First Aid">Health & First Aid</option>
+        <option value="Home Maintenance & Tools">Home Maintenance & Tools</option>
+        <option value="Other">Other</option>
       </select>
 
       {/* Expiry Date Filter */}
@@ -160,6 +155,7 @@ const ProductList = () => {
       <table>
         <thead>
           <tr>
+            <th>Image</th>
             <th>Name</th>
             <th>Category</th>
             <th>Price</th>
@@ -167,29 +163,25 @@ const ProductList = () => {
             <th>Expire Date</th>
             <th>Actions</th>
             <th>Expiry Status</th>
-            
           </tr>
         </thead>
         <tbody>
           {filteredProducts.map((product) => (
             <tr key={product._id}>
+              <td>
+                <img
+                  src={product.Image}
+                  alt={product.P_name}
+                  style={{ width: "50px", height: "50px", objectFit: "cover", borderRadius: "5px" }}
+                />
+              </td>
               {editingProduct === product._id ? (
                 <>
-                  <td>
-                    <input type="text" name="P_name" value={updatedProduct.P_name} onChange={handleChange} />
-                  </td>
-                  <td>
-                    <input type="text" name="Category" value={updatedProduct.Category} onChange={handleChange} />
-                  </td>
-                  <td>
-                    <input type="number" name="Price" value={updatedProduct.Price} onChange={handleChange} />
-                  </td>
-                  <td>
-                    <input type="number" name="Quantity" value={updatedProduct.Quantity} onChange={handleChange} />
-                  </td>
-                  <td>
-                    <input type="text" name="Expire_Date" value={updatedProduct.Expire_Date} onChange={handleChange} />
-                  </td>
+                  <td><input type="text" name="P_name" value={updatedProduct.P_name} onChange={handleChange} /></td>
+                  <td><input type="text" name="Category" value={updatedProduct.Category} onChange={handleChange} /></td>
+                  <td><input type="number" name="Price" value={updatedProduct.Price} onChange={handleChange} /></td>
+                  <td><input type="number" name="Quantity" value={updatedProduct.Quantity} onChange={handleChange} /></td>
+                  <td><input type="text" name="Expire_Date" value={updatedProduct.Expire_Date} onChange={handleChange} /></td>
                   <td>
                     <button onClick={() => saveProduct(product._id)}>Save</button>
                     <button onClick={() => setEditingProduct(null)}>Cancel</button>
@@ -202,12 +194,11 @@ const ProductList = () => {
                   <td>Rs {product.Price}</td>
                   <td>{product.Quantity}</td>
                   <td>{product.Expire_Date}</td>
-                  
                   <td>
                     <button onClick={() => editProduct(product)}>Edit</button>
                     <button onClick={() => deleteProduct(product._id)}>Delete</button>
                   </td>
-                  <td>{product.expiryMessage}</td> {/* Display expiry status */}
+                  <td>{product.expiryMessage}</td>
                 </>
               )}
             </tr>
