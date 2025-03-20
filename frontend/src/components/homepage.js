@@ -24,7 +24,7 @@ const HomePage = () => {
             <li><a href="#features">Features</a></li>
             <li><a href="#about">About</a></li>
             <li><a href="#contact">Contact</a></li>
-            <li><button className="cta-button" onClick={handleGetStarted}>Get Started</button></li>
+           
           </ul>
         </div>
       </nav>
