@@ -23,7 +23,9 @@ exports.createProduct = async (req, res) => {
 
     try {
       const { P_name, Category, Price, Quantity, Expire_Date } = req.body;
-      const P_Image = req.file ? req.file.path : null; // Store local image path
+      const P_Image = req.file ? req.file.filename : null;
+
+
 
       const product = new ProductModel({
         P_name,
@@ -46,11 +48,18 @@ exports.createProduct = async (req, res) => {
 exports.getAllProducts = async (req, res) => {
   try {
     const products = await ProductModel.find();
-    res.status(200).json({ success: true, products });
+
+    const updatedProducts = products.map(product => ({
+      ...product._doc,
+      P_Image: product.P_Image ? `http://localhost:8090/uploads/${product.P_Image}` : null
+    }));
+
+    res.status(200).json({ success: true, products: updatedProducts });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
 
 // ✅ Get a single product by ID
 exports.getProductById = async (req, res) => {
@@ -59,11 +68,15 @@ exports.getProductById = async (req, res) => {
     if (!product) {
       return res.status(404).json({ success: false, message: "Product not found" });
     }
+
+    product.P_Image = product.P_Image ? `http://localhost:8090/uploads/${product.P_Image}` : null;
+
     res.status(200).json({ success: true, product });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
 
 // ✅ Update product by ID
 exports.updateProduct = async (req, res) => {
@@ -88,7 +101,8 @@ exports.updateProduct = async (req, res) => {
 
       // Update fields
       product.P_name = P_name || product.P_name;
-      product.P_Image = req.file ? req.file.path : product.P_Image;
+      product.P_Image = req.file ? req.file.filename : product.P_Image;
+
       product.Category = Category || product.Category;
       product.Price = Price || product.Price;
       product.Quantity = Quantity || product.Quantity;

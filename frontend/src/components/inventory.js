@@ -8,10 +8,10 @@ const AddProduct = () => {
   const [Category, setCategory] = useState('');
   const [Price, setPrice] = useState('');
   const [Quantity, setQuantity] = useState('');
-  const [Expire_Date, setExpire_Date] = useState('');
+  const [Expire_Date, setExpire_Date] = useState(''); // Ensure correct state name
   const [P_Image, setP_Image] = useState(null);
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false); // For loading state
+  const [loading, setLoading] = useState(false);
 
   const handleCategoryChange = (e) => {
     setCategory(e.target.value);
@@ -22,13 +22,14 @@ const AddProduct = () => {
   };
 
   const isPastDate = (date) => {
-    const today = new Date().toISOString().split('T')[0]; 
+    const today = new Date().toISOString().split('T')[0];
     return date < today;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Validation checks
     if (!P_name || !Category || !Price || !Quantity || !Expire_Date) {
       setError('All fields are required.');
       return;
@@ -50,6 +51,7 @@ const AddProduct = () => {
     }
 
     setLoading(true);
+    setError('');
 
     const formData = new FormData();
     formData.append('P_name', P_name);
@@ -62,6 +64,11 @@ const AddProduct = () => {
       formData.append('P_Image', P_Image);
     }
 
+    // Debugging: Check FormData values
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}:`, value);
+    }
+
     try {
       const response = await fetch('http://localhost:8090/api/products/create', {
         method: 'POST',
@@ -72,7 +79,8 @@ const AddProduct = () => {
       try {
         data = await response.json();
       } catch (error) {
-        throw new Error("Invalid JSON response from server");
+        console.error("Invalid JSON response from server:", error);
+        throw new Error("Unexpected server response.");
       }
 
       if (response.ok) {
@@ -82,13 +90,13 @@ const AddProduct = () => {
           text: 'Product has been added successfully.',
         });
 
+        // Reset form fields
         setP_name('');
         setCategory('');
         setPrice('');
         setQuantity('');
         setExpire_Date('');
         setP_Image(null);
-        setError('');
       } else {
         setError(data.message || 'An error occurred');
         Swal.fire({
@@ -114,6 +122,8 @@ const AddProduct = () => {
       <Sidebar />
       <div className="form-container">
         <h1>Add Product</h1>
+
+        {error && <p className="error-message">{error}</p>}
 
         <form onSubmit={handleSubmit}>
           <div className="row">
@@ -169,6 +179,7 @@ const AddProduct = () => {
                 type="date"
                 value={Expire_Date}
                 onChange={(e) => setExpire_Date(e.target.value)}
+                min={new Date().toISOString().split("T")[0]} // Prevent past dates
               />
             </div>
             <div className="column">
@@ -176,10 +187,11 @@ const AddProduct = () => {
               <input type="file" onChange={handleFileChange} />
             </div>
           </div>
+
           <div className="addbutton-container">
-          <button type="submit" disabled={loading} className="submit-btn">
-            {loading ? 'Adding Product...' : 'Add Product'}
-          </button>
+            <button type="submit" disabled={loading} className="submit-btn">
+              {loading ? 'Adding Product...' : 'Add Product'}
+            </button>
           </div>
         </form>
       </div>
