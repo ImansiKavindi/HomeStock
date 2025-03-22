@@ -1,6 +1,9 @@
 const ProductModel = require("../models/ProductModel");
 const multer = require("multer");
 const path = require("path");
+const PDFDocument = require('pdfkit');
+const fs = require('fs');
+
 
 // Multer Storage Setup (Local)
 const storage = multer.diskStorage({
@@ -125,10 +128,12 @@ exports.deleteProduct = async (req, res) => {
     }
 
     // Delete image from local storage
-    if (product.P_Image) {
-      const fs = require('fs');
-      fs.unlinkSync(product.P_Image); // Deleting the image from the 'uploads' folder
-    }
+if (product.P_Image) {
+  const fs = require('fs');
+  const filePath = path.join(__dirname, '../uploads', product.P_Image);  // Ensure correct path
+  fs.unlinkSync(filePath); // Deleting the image from the 'uploads' folder
+}
+
 
     await product.deleteOne();
     res.status(200).json({ success: true, message: "Product deleted successfully" });
@@ -168,3 +173,73 @@ exports.getOutOfStockProducts = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+
+
+// ✅ Generate and Download Inventory Report
+exports.generateReport = async (req, res) => {
+  try {
+    const { date } = req.query; // Get date from request
+
+    if (!date) {
+      return res.status(400).json({ success: false, message: "Please provide a date in YYYY-MM-DD format." });
+    }
+
+    // Convert date to correct format
+    const selectedDate = new Date(date);
+    selectedDate.setHours(23, 59, 59, 999); // Ensure it captures the full day
+
+    // Fetching data
+    const expiredProducts = await ProductModel.find({ Expire_Date: { $lte: selectedDate } });
+    const lowStockProducts = await ProductModel.find({ Quantity: { $gt: 0, $lt: 16 } });
+    const outOfStockProducts = await ProductModel.find({ Quantity: 0 });
+
+    // Create PDF document
+    const doc = new PDFDocument();
+    const reportFilePath = path.join(__dirname, "../reports/inventory_report.pdf");
+    doc.pipe(fs.createWriteStream(reportFilePath));
+
+    // Title
+    doc.fontSize(16).text(`Inventory Report for ${date}`, { align: 'center' });
+    doc.moveDown();
+
+    // Expired Products
+    doc.fontSize(12).text("Expired Products:", { underline: true });
+    expiredProducts.forEach(product => {
+      doc.text(`Name: ${product.P_name} | Expiry Date: ${product.Expire_Date}`);
+    });
+    doc.moveDown();
+
+    // Low Stock Products
+    doc.fontSize(12).text("Low Stock Products (Quantity between 1 and 15):", { underline: true });
+    lowStockProducts.forEach(product => {
+      doc.text(`Name: ${product.P_name} | Quantity: ${product.Quantity}`);
+    });
+    doc.moveDown();
+
+    // Out of Stock Products
+    doc.fontSize(12).text("Out of Stock Products (Quantity = 0):", { underline: true });
+    outOfStockProducts.forEach(product => {
+      doc.text(`Name: ${product.P_name}`);
+    });
+    doc.moveDown();
+
+    // Save the PDF and send it to the user
+    doc.end();
+
+    // After creating the PDF, send it to the client
+    res.download(reportFilePath, 'Inventory_Report.pdf', (err) => {
+      if (err) {
+        res.status(500).json({ success: false, message: "Failed to download report" });
+      } else {
+        // Optionally, you can delete the file after sending it
+        fs.unlinkSync(reportFilePath);  // Delete the file after download
+      }
+    });
+
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+

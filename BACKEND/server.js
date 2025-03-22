@@ -18,13 +18,19 @@ app.use(cors({
 app.use(express.json()); // Parse JSON requests
 
 // Serve static files
-app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); 
+
 
 // Route Imports
 const productRoutes = require('./routes/ProductRoutes');
+const reportRoutes = require("./routes/ReportRoutes"); // Import Report Routes
+
+
 
 // API Routes
 app.use('/api/products', productRoutes);
+app.use("/api/reports", reportRoutes); 
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Serve static files
+
 
 // MongoDB Connection
 const URL = process.env.MONGODB_URL;

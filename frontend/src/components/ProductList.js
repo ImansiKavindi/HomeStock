@@ -2,7 +2,12 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Sidebar from './Sidebar';
 import "../css/ProductList.css"; // Import CSS for styling
-import { FaEdit, FaTrash, FaSave, FaTimes } from "react-icons/fa";
+import { FaEdit, FaTrash, FaSave, FaTimes, FaDownload, FaPlus} from "react-icons/fa";
+
+
+
+
+import Swal from 'sweetalert2';
 
 const API_URL = "http://localhost:8090/api/products";
 
@@ -14,6 +19,8 @@ const ProductList = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedExpireDate, setSelectedExpireDate] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedReportDate, setSelectedReportDate] = useState("");
+  const [isReportDate, setIsReportDate] = useState(false);  // Flag to differentiate
 
   const fetchProducts = async () => {
     try {
@@ -26,15 +33,26 @@ const ProductList = () => {
   };
 
   const deleteProduct = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this product?")) return;
-
-    try {
-      await axios.delete(`${API_URL}/${id}`);
-      setProducts(products.filter((product) => product._id !== id));
-      setFilteredProducts(filteredProducts.filter((product) => product._id !== id));
-    } catch (error) {
-      console.error("Error deleting product:", error);
-    }
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You will not be able to recover this product!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, cancel!',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await axios.delete(`${API_URL}/${id}`);
+          setProducts(products.filter((product) => product._id !== id));
+          setFilteredProducts(filteredProducts.filter((product) => product._id !== id));
+          Swal.fire('Deleted!', 'The product has been deleted.', 'success');
+        } catch (error) {
+          console.error("Error deleting product:", error);
+          Swal.fire('Error!', 'There was an error deleting the product.', 'error');
+        }
+      }
+    });
   };
 
   const editProduct = (product) => {
@@ -51,8 +69,10 @@ const ProductList = () => {
       await axios.put(`${API_URL}/${id}`, updatedProduct);
       setEditingProduct(null);
       fetchProducts();
+      Swal.fire('Success!', 'Product has been updated successfully!', 'success');
     } catch (error) {
       console.error("Error updating product:", error);
+      Swal.fire('Error!', 'There was an error updating the product.', 'error');
     }
   };
 
@@ -63,8 +83,13 @@ const ProductList = () => {
 
   const handleExpireDateChange = (e) => {
     const selectedDate = e.target.value;
-    setSelectedExpireDate(selectedDate);
-    filterProducts(selectedCategory, selectedDate, searchQuery);
+    if (isReportDate) {
+      setSelectedReportDate(selectedDate);  // Set as report date if flag is true
+     
+    } else {
+      setSelectedExpireDate(selectedDate);  // Set as filter date if flag is false
+      filterProducts(selectedCategory, selectedDate, searchQuery);
+    }
   };
 
   const handleSearchChange = (e) => {
@@ -120,6 +145,9 @@ const ProductList = () => {
     window.location.href = "/add-product";
   };
 
+ 
+  
+ 
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -154,21 +182,27 @@ const ProductList = () => {
           </select>
 
           <input
-            type="date"
-            className="expiry-filter"
-            value={selectedExpireDate}
-            onChange={handleExpireDateChange}
-          />
+              type="date"
+              className="expiry-filter"
+              value={selectedReportDate}
+              onChange={(e) => setSelectedReportDate(e.target.value)}
+            />
+
         </div>
 
-        {/* Add Product Button */}
-        <button className="add-product-btn" onClick={handleAddProduct}>Add Product</button>
+        <div className="button-container">
+          {/* Add Product Button */}
+          <button className="add-product-btn" onClick={handleAddProduct}>
+            <FaPlus /> Add Product
+          </button>
+
+         
+        </div>
 
         {/* Product List Table */}
         <table className="product-table">
           <thead>
             <tr>
-              <th>Image</th>
               <th>Name</th>
               <th>Category</th>
               <th>Price</th>
@@ -181,19 +215,11 @@ const ProductList = () => {
           <tbody>
             {filteredProducts.map((product) => (
               <tr key={product._id}>
-                <td>
-                <img src={`http://localhost:8090/${product.Image}`} alt={product.P_name} className="product-img" />
-
-                </td>
                 {editingProduct === product._id ? (
                   <>
                     <td><input type="text" name="P_name" value={updatedProduct.P_name} onChange={handleChange} /></td>
                     <td>
-                      <select
-                        name="Category"
-                        value={updatedProduct.Category}
-                        onChange={handleChange}
-                      >
+                      <select name="Category" value={updatedProduct.Category} onChange={handleChange}>
                         <option value="Pantry Staples">Pantry Staples</option>
                         <option value="Refrigerated Items">Refrigerated Items</option>
                         <option value="Fruits & Vegetables">Fruits & Vegetables</option>
@@ -204,32 +230,9 @@ const ProductList = () => {
                         <option value="Other">Other</option>
                       </select>
                     </td>
-                    <td>
-                      <input
-                        type="number"
-                        name="Price"
-                        min="1"
-                        value={updatedProduct.Price}
-                        onChange={handleChange}
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="number"
-                        name="Quantity"
-                        min="1"
-                        value={updatedProduct.Quantity}
-                        onChange={handleChange}
-                      />
-                    </td>
-                    <input
-                        type="date"
-                        name="Expire_Date"
-                      value={updatedProduct.Expire_Date}
-                      onChange={handleChange}
-                    min={new Date().toISOString().split("T")[0]} // Prevent past dates
-                       />
-
+                    <td><input type="number" name="Price" min="1" value={updatedProduct.Price} onChange={handleChange} /></td>
+                    <td><input type="number" name="Quantity" min="1" value={updatedProduct.Quantity} onChange={handleChange} /></td>
+                    <td><input type="date" name="Expire_Date" value={updatedProduct.Expire_Date} onChange={handleChange} min={new Date().toISOString().split("T")[0]} /></td>
                     <td>
                       <button className="icon-btn save-btn" onClick={() => saveProduct(product._id)}>
                         <FaSave />
@@ -243,14 +246,18 @@ const ProductList = () => {
                   <>
                     <td>{product.P_name}</td>
                     <td>{product.Category}</td>
-                    <td>Rs {product.Price}</td>
+                    <td>{`Rs ${product.Price}`}</td>
                     <td>{product.Quantity}</td>
                     <td>{product.Expire_Date}</td>
                     <td>
-                      <button className="icon-btn edit-btn" onClick={() => editProduct(product)}><FaEdit /></button>
-                      <button className="icon-btn delete-btn" onClick={() => deleteProduct(product._id)}><FaTrash /></button>
+                      <button className="icon-btn edit-btn" onClick={() => editProduct(product)}>
+                        <FaEdit />
+                      </button>
+                      <button className="icon-btn delete-btn" onClick={() => deleteProduct(product._id)}>
+                        <FaTrash />
+                      </button>
                     </td>
-                    <td>{product.expiryMessage}</td>
+                    <td>{product.expiryMessage || getExpiryStatusMessage(product.Expire_Date)}</td>
                   </>
                 )}
               </tr>

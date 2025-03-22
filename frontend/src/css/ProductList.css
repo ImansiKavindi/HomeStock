@@ -47,21 +47,58 @@
     border-radius: 5px;
   }
   
-  .add-product-btn {
-    background: linear-gradient(to right, #024201, #2ff539);
+  
+
+
+  .button-container {
+    display: flex; /* Aligns items in a row */
+    gap: 65%; /* Adds space between the buttons */
+    margin-bottom: 20px;
+  }
+
+  
+  .add-product-btn, .download-report-btn {
+    background: linear-gradient(to right, #003b00be ,#5ef466a6);
     color: white;
-    padding: 12px 20px;
+    padding: 10px 20px;
     border: none;
     border-radius: 5px;
-    cursor: pointer;
     font-size: 16px;
-    margin-bottom: 10px;
-    transition: 0.3s;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.3s ease;
+  }
+
+  .add-product-btn:hover , .download-report-btn:hover {
+    background-color: #033c1a;
+
   }
   
-  .add-product-btn:hover {
-    background-color: #2c6e2f;
+  .report-section {
+    /* Additional styling for the report section if needed */
   }
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   
   .product-table {
     width: 100%;
