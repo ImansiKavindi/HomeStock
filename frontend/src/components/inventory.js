@@ -22,10 +22,11 @@ const AddProduct = () => {
   };
 
   const isPastDate = (date) => {
-    const today = new Date().toISOString().split('T')[0];
-    return date < today;
+    const today = new Date();
+    const inputDate = new Date(date);
+    return inputDate < today;
   };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
 

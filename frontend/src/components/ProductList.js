@@ -3,11 +3,9 @@ import axios from "axios";
 import Sidebar from './Sidebar';
 import "../css/ProductList.css"; // Import CSS for styling
 import { FaEdit, FaTrash, FaSave, FaTimes, FaDownload, FaPlus} from "react-icons/fa";
-
-
-
-
 import Swal from 'sweetalert2';
+import { jsPDF } from "jspdf";
+
 
 const API_URL = "http://localhost:8090/api/products";
 
@@ -19,7 +17,6 @@ const ProductList = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedExpireDate, setSelectedExpireDate] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedReportDate, setSelectedReportDate] = useState("");
   const [isReportDate, setIsReportDate] = useState(false);  // Flag to differentiate
 
   const fetchProducts = async () => {
@@ -83,13 +80,8 @@ const ProductList = () => {
 
   const handleExpireDateChange = (e) => {
     const selectedDate = e.target.value;
-    if (isReportDate) {
-      setSelectedReportDate(selectedDate);  // Set as report date if flag is true
-     
-    } else {
-      setSelectedExpireDate(selectedDate);  // Set as filter date if flag is false
-      filterProducts(selectedCategory, selectedDate, searchQuery);
-    }
+    setSelectedExpireDate(selectedDate);
+    filterProducts(selectedCategory, selectedDate, searchQuery);
   };
 
   const handleSearchChange = (e) => {
@@ -126,9 +118,7 @@ const ProductList = () => {
       filtered = filtered.filter((product) => {
         const productExpireDate = new Date(product.Expire_Date);
         const selectedDate = new Date(expireDate);
-        let expiryMessage = getExpiryStatusMessage(product.Expire_Date);
-        product.expiryMessage = expiryMessage;
-        return productExpireDate >= selectedDate;
+        return productExpireDate >= selectedDate; // Only show products that have not expired
       });
     }
 
@@ -145,9 +135,46 @@ const ProductList = () => {
     window.location.href = "/add-product";
   };
 
- 
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options); // Converts to "Month Day, Year"
+  };
+
+  const generateReport = () => {
+    const doc = new jsPDF();
+    doc.setFontSize(20);
+    doc.text("Product List Report", 14, 20);
   
- 
+    // Set the font size for the table headers
+    doc.setFontSize(12);
+  
+    // Table headers
+    doc.text("Name", 14, 30);
+    doc.text("Category", 50, 30);
+    doc.text("Price", 100, 30);
+    doc.text("Quantity", 130, 30);
+    doc.text("Expire Date", 160, 30);
+    doc.text("Expiry Status", 200, 30);
+  
+    let yPosition = 40;
+  
+    // Loop through filtered products and add them to the PDF
+    filteredProducts.forEach((product) => {
+      doc.text(product.P_name, 14, yPosition);
+      doc.text(product.Category, 50, yPosition);
+      doc.text(`Rs ${product.Price}`, 100, yPosition);
+      doc.text(product.Quantity.toString(), 130, yPosition);
+      doc.text(formatDate(product.Expire_Date), 160, yPosition);
+      doc.text(getExpiryStatusMessage(product.Expire_Date), 200, yPosition);
+  
+      yPosition += 10; // Move to next row
+    });
+  
+    // Save the PDF file
+    doc.save("Product_List_Report.pdf");
+  };
+  
+
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -184,10 +211,9 @@ const ProductList = () => {
           <input
               type="date"
               className="expiry-filter"
-              value={selectedReportDate}
-              onChange={(e) => setSelectedReportDate(e.target.value)}
+              value={selectedExpireDate}
+              onChange={handleExpireDateChange}
             />
-
         </div>
 
         <div className="button-container">
@@ -196,7 +222,16 @@ const ProductList = () => {
             <FaPlus /> Add Product
           </button>
 
-         
+          {/* Report Section */}
+          <div className="report-section">
+            <button className="download-report-btn" onClick={generateReport}>
+            
+
+
+              <FaDownload /> Download Report
+            </button>
+          </div>
+
         </div>
 
         {/* Product List Table */}
@@ -248,7 +283,7 @@ const ProductList = () => {
                     <td>{product.Category}</td>
                     <td>{`Rs ${product.Price}`}</td>
                     <td>{product.Quantity}</td>
-                    <td>{product.Expire_Date}</td>
+                    <td>{formatDate(product.Expire_Date)}</td>
                     <td>
                       <button className="icon-btn edit-btn" onClick={() => editProduct(product)}>
                         <FaEdit />
@@ -257,7 +292,7 @@ const ProductList = () => {
                         <FaTrash />
                       </button>
                     </td>
-                    <td>{product.expiryMessage || getExpiryStatusMessage(product.Expire_Date)}</td>
+                    <td>{getExpiryStatusMessage(product.Expire_Date)}</td>
                   </>
                 )}
               </tr>

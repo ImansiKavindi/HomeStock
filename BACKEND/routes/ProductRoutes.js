@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const ProductController = require("../controllers/ProductControllers");
+const reportController = require("../controllers/ReportController");
 
 // Routes for Low Stock and Out of Stock products
 router.get("/lowstock", ProductController.getLowStockProducts);  // Fetch low stock products
@@ -13,8 +14,7 @@ router.get("/:id", ProductController.getProductById); // Read one product
 router.put("/:id", ProductController.updateProduct); // Update
 router.delete("/:id", ProductController.deleteProduct); // Delete
 router.get("/generate-report", ProductController.generateReport);
-router.get('/inventory-summary', reportController.generateReport);
-router.get('/expiry-status', reportController.getExpiryStatus);
-router.get('/category-wise', reportController.getCategoryWiseReport);
+
+
 
 module.exports = router;

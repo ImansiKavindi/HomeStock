@@ -22,13 +22,12 @@ app.use(express.json()); // Parse JSON requests
 
 // Route Imports
 const productRoutes = require('./routes/ProductRoutes');
-const reportRoutes = require("./routes/ReportRoutes"); // Import Report Routes
 
 
 
 // API Routes
 app.use('/api/products', productRoutes);
-app.use("/api/reports", reportRoutes); 
+
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Serve static files
 
 
