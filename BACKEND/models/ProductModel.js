@@ -7,7 +7,7 @@ const productSchema = new mongoose.Schema({
   },
   P_Image: {
     type: String, 
-    required: true,
+    required: false,
   },
   Category: {
     type: String,
@@ -21,7 +21,6 @@ const productSchema = new mongoose.Schema({
         'Personal Care & Hygiene',
         'Health & First Aid',
         'Home Maintenance & Tools',
-        'Health & First Aid',
         'Other'
       ],
       message: "Please select a correct category"

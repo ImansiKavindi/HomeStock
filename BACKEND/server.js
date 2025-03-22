@@ -1,8 +1,7 @@
-
-require('dotenv').config(); 
+ 
+require('dotenv').config();
 const express = require("express");
 const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
 const cors = require("cors");
 
 const app = express();
@@ -10,16 +9,14 @@ const PORT = process.env.PORT || 8090;
 
 // Middleware
 app.use(cors({
-    origin: 'http://localhost:3000', // Adjust this to your frontend URL
+    origin: '*', // Temporarily allow all origins for testing
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type'],
+    credentials: true,
 }));
 
 
-
-
-app.use(bodyParser.json());
-app.use(express.json()); 
+app.use(express.json()); // Using express built-in middleware for JSON parsing
 
 // Route Imports
 const productRoutes = require('./routes/ProductRoutes');
@@ -35,19 +32,21 @@ app.use("/api/shopping-list", shoppingListRoutes);
 app.use("/api/reminders", reminderRoutes);
 
 
+
+
 // MongoDB Connection
 const URL = process.env.MONGODB_URL;
-mongoose.connect(URL);
+mongoose.connect(URL, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log("MongoDB Connection Success"))
+    .catch((err) => console.log("MongoDB Connection Error:", err));
 
-const connection = mongoose.connection;
-connection.once("open", () => {
-    console.log("MongoDB Connection Success");
+// 404 Route Handling (for undefined routes)
+app.use((req, res, next) => {
+    res.status(404).json({ message: "Route not found" });
 });
-
-
 
 // Start Server
 app.listen(PORT, () => {
     console.log(`Server is up and running on port number: ${PORT}`);
-
 });
+ 

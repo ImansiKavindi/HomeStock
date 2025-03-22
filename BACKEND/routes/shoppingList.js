@@ -2,12 +2,22 @@ const express = require("express");
 const router = express.Router();
 const shoppingListController = require("../controllers/shoppingListController");
 
-// ✅ Routes for shopping list
+// ✅ Add item to shopping list
 router.post("/add", shoppingListController.addItem);
+
+// ✅ Get shopping list
 router.get("/", shoppingListController.getShoppingList);
-router.delete("/remove", shoppingListController.removeItems);
-router.put("/update", shoppingListController.updateItem);
+
+// ✅ Remove item(s) from shopping list
+router.post("/remove", shoppingListController.removeItems);
+
+// ✅ Update an item
+router.post("/update", shoppingListController.updateItem);
+
+// ✅ Clear the entire shopping list
 router.delete("/clear", shoppingListController.clearShoppingList);
-router.get("/download-pdf", shoppingListController.downloadPDF);
+
+// ✅ Download Shopping List as PDF
+router.get("/download", shoppingListController.downloadShoppingList);
 
 module.exports = router;

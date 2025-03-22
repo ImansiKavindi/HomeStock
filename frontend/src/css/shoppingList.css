@@ -1,0 +1,253 @@
+ /* General Page Styling */
+.shopping-list-container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* Heading */
+.shopping-list-container h1 {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Add Item Section */
+.add-item-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+/* Input Field */
+.item-input {
+  flex: 1;
+  padding: 10px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  outline: none;
+  transition: border 0.3s ease-in-out;
+}
+
+.item-input:focus {
+  border-color: #007bff;
+}
+
+/* Buttons */
+button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s ease;
+}
+
+/* Individual Button Colors */
+.add-button {
+  background-color: #28a745;
+  color: white;
+}
+
+.clear-button {
+  background-color: #dc3545;
+  color: white;
+}
+
+.download-button {
+  background-color: #007bff;
+  color: white;
+}
+
+.remove-button {
+  background-color: #ff5722;
+  color: white;
+}
+
+/* Button Hover Effects */
+.add-button:hover {
+  background-color: #218838;
+}
+
+.clear-button:hover {
+  background-color: #c82333;
+}
+
+.download-button:hover {
+  background-color: #0056b3;
+}
+
+.remove-button:hover {
+  background-color: #e64a19;
+}
+
+/* Shopping List Items */
+.shopping-list-items {
+  text-align: left;
+  padding: 0;
+}
+
+.shopping-list-items ul {
+  list-style: none;
+  padding: 0;
+}
+
+.shopping-list-items li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f8f9fa;
+  padding: 10px;
+  margin-bottom: 5px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+  transition: background 0.3s ease;
+}
+
+.shopping-list-items li:hover {
+  background: #e9ecef;
+}
+
+/* Checkbox and Item Text */
+.shopping-list-items input[type="checkbox"] {
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.item-text {
+  flex: 1;
+  font-size: 16px;
+  color: #333;
+}
+
+/* Edit Mode */
+.edit-input {
+  width: 150px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+/* Action Buttons */
+.edit-button,
+.update-button,
+.cancel-button {
+  background: #ffc107;
+  color: #333;
+}
+
+.edit-button:hover,
+.update-button:hover {
+  background: #e0a800;
+}
+
+.cancel-button {
+  background: #6c757d;
+  color: white;
+}
+
+.cancel-button:hover {
+  background: #5a6268;
+}
+
+/* Action Buttons Container */
+.action-buttons {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  gap: 10px;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 600px) {
+  .shopping-list-container {
+      max-width: 90%;
+      padding: 15px;
+  }
+
+  .add-item-section {
+      flex-direction: column;
+  }
+
+  .item-input {
+      width: 100%;
+  }
+
+  button {
+      width: 100%;
+  }
+
+  .shopping-list-items li {
+      flex-direction: column;
+      align-items: flex-start;
+  }
+
+  .edit-button, .update-button, .cancel-button {
+      width: 100%;
+      margin-top: 5px;
+  }
+
+  .action-buttons {
+      flex-direction: column;
+      gap: 5px;
+  }
+}
+
+/* ✅ Shopping List Item - Flex for Alignment */
+.shopping-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f8f9fa;
+  padding: 10px;
+  margin-bottom: 5px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+  transition: background 0.3s ease;
+}
+
+/* ✅ Item Name Left */
+.item-text {
+  flex: 1;
+  font-size: 16px;
+  color: #333;
+  text-align: left;
+}
+
+/* ✅ Checkbox Right */
+.item-checkbox {
+  cursor: pointer;
+  transform: scale(1.2);
+}
+
+/* ✅ Edit and Remove Buttons Appear Only When Selected */
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* ✅ Mobile Responsive */
+@media (max-width: 600px) {
+  .shopping-list-item {
+    flex-direction: row-reverse;
+    justify-content: space-between;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    gap: 5px;
+  }
+}
