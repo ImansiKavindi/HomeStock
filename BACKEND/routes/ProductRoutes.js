@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const ProductController = require("../controllers/ProductControllers");
-const reportController = require("../controllers/ReportController");
+
 
 // Routes for Low Stock and Out of Stock products
 router.get("/lowstock", ProductController.getLowStockProducts);  // Fetch low stock products

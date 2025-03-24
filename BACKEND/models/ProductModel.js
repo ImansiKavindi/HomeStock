@@ -5,10 +5,7 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  P_Image: {
-    type: String, 
-    required: false,
-  },
+ 
   Category: {
     type: String,
     required: [true, "Please enter product category"],
@@ -27,14 +24,18 @@ const productSchema = new mongoose.Schema({
     }
   },
  
+  
+  Quantity: {
+    value: { type: Number, required: true },
+    unit: { type: String, required: true } // kg, L, pieces, etc.
+  },
+
   Price: {
     type: Number,
     required: true,
   },
-  Quantity: {
-    type: Number,
-    required: true,
-  },
+   
+  
   Expire_Date: {
     type: Date,
     required: true,
