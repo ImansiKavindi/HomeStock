@@ -1,45 +1,49 @@
 import React, { useState } from 'react';
-import Sidebar from './Sidebar'; // Importing the sidebar
-import Swal from 'sweetalert2'; // SweetAlert for success/error messages
-import '../css/inventory.css'; // Import your CSS file for styles
+import Sidebar from './Sidebar';
+import Swal from 'sweetalert2';
+import '../css/inventory.css';
 
 const AddProduct = () => {
   const [P_name, setP_name] = useState('');
   const [Category, setCategory] = useState('');
   const [Price, setPrice] = useState('');
   const [Quantity, setQuantity] = useState('');
+  const [Unit, setUnit] = useState('');
   const [Expire_Date, setExpire_Date] = useState('');
-  const [P_Image, setP_Image] = useState(null);
+  
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false); // For loading state
+  const [loading, setLoading] = useState(false);
 
-  const handleCategoryChange = (e) => {
-    setCategory(e.target.value);
-  };
-
-  const handleFileChange = (e) => {
-    setP_Image(e.target.files[0]);
-  };
+  const handleCategoryChange = (e) => setCategory(e.target.value);
+  const handleQuantityChange = (e) => setQuantity(e.target.value);
+  const handleUnitChange = (e) => setUnit(e.target.value);
 
   const isPastDate = (date) => {
-    const today = new Date().toISOString().split('T')[0]; 
-    return date < today;
+    const today = new Date();
+    const inputDate = new Date(date);
+    return inputDate < today;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!P_name || !Category || !Price || !Quantity || !Expire_Date) {
+    // Reset previous errors
+    setError('');
+
+    // Validation
+    if (!P_name || !Category || !Price || !Quantity || !Unit || !Expire_Date) {
       setError('All fields are required.');
       return;
     }
 
-    if (Price <= 0) {
+    const parsedPrice = parseFloat(Price);
+    if (parsedPrice <= 0 || isNaN(parsedPrice)) {
       setError('Price must be a positive number.');
       return;
     }
 
-    if (Quantity < 1) {
+    const parsedQuantity = parseInt(Quantity, 10);
+    if (parsedQuantity <= 0 || isNaN(parsedQuantity)) {
       setError('Quantity must be at least 1.');
       return;
     }
@@ -49,18 +53,23 @@ const AddProduct = () => {
       return;
     }
 
+    if (!Unit) {
+      setError('Please select a unit.');
+      return;
+    }
+
     setLoading(true);
 
+    // Prepare form data
     const formData = new FormData();
     formData.append('P_name', P_name);
     formData.append('Category', Category);
-    formData.append('Price', Price);
-    formData.append('Quantity', Quantity);
+    formData.append('Price', parsedPrice);
+    formData.append('QuantityValue', parsedQuantity);  // Ensure you are sending this
+    formData.append('QuantityUnit', Unit);
     formData.append('Expire_Date', Expire_Date);
 
-    if (P_Image) {
-      formData.append('P_Image', P_Image);
-    }
+    
 
     try {
       const response = await fetch('http://localhost:8090/api/products/create', {
@@ -72,7 +81,8 @@ const AddProduct = () => {
       try {
         data = await response.json();
       } catch (error) {
-        throw new Error("Invalid JSON response from server");
+        console.error('Invalid JSON response from server:', error);
+        throw new Error('Unexpected server response.');
       }
 
       if (response.ok) {
@@ -82,13 +92,14 @@ const AddProduct = () => {
           text: 'Product has been added successfully.',
         });
 
+        // Clear fields after successful submission
         setP_name('');
         setCategory('');
         setPrice('');
         setQuantity('');
+        setUnit('');
         setExpire_Date('');
-        setP_Image(null);
-        setError('');
+      
       } else {
         setError(data.message || 'An error occurred');
         Swal.fire({
@@ -114,6 +125,8 @@ const AddProduct = () => {
       <Sidebar />
       <div className="form-container">
         <h1>Add Product</h1>
+
+        {error && <p className="error-message">{error}</p>}
 
         <form onSubmit={handleSubmit}>
           <div className="row">
@@ -143,6 +156,31 @@ const AddProduct = () => {
 
           <div className="row">
             <div className="column">
+              <label>Quantity:</label>
+              <input
+                type="number"
+                value={Quantity}
+                onChange={handleQuantityChange}
+                min="1"
+              />
+            </div>
+            <div className="column">
+              <label>Unit:</label>
+              <select value={Unit} onChange={handleUnitChange}>
+                <option value="">Select Unit</option>
+                <option value="kg">Kilograms (kg)</option>
+                <option value="L">Liters (L)</option>
+                <option value="pieces">Pieces</option>
+                <option value="g">Grams (g)</option>
+                <option value="ml">Milliliters (ml)</option>
+                <option value="packs">Packs</option>
+                <option value="Bottles">Bottles</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="row">
+            <div className="column">
               <label>Price:</label>
               <input
                 type="number"
@@ -152,34 +190,20 @@ const AddProduct = () => {
               />
             </div>
             <div className="column">
-              <label>Quantity:</label>
-              <input
-                type="number"
-                value={Quantity}
-                onChange={(e) => setQuantity(e.target.value)}
-                min="1"
-              />
-            </div>
-          </div>
-
-          <div className="row">
-            <div className="column">
               <label>Expiration Date:</label>
               <input
                 type="date"
                 value={Expire_Date}
                 onChange={(e) => setExpire_Date(e.target.value)}
+                min={new Date().toISOString().split("T")[0]}
               />
             </div>
-            <div className="column">
-              <label>Product Image (optional):</label>
-              <input type="file" onChange={handleFileChange} />
             </div>
-          </div>
+
           <div className="addbutton-container">
-          <button type="submit" disabled={loading} className="submit-btn">
-            {loading ? 'Adding Product...' : 'Add Product'}
-          </button>
+            <button type="submit" disabled={loading} className="submit-btn">
+              {loading ? 'Adding Product...' : 'Add Product'}
+            </button>
           </div>
         </form>
       </div>

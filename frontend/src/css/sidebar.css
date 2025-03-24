@@ -1,6 +1,8 @@
 .side-navbar {
   width: 260px;
-  background-color: #fff;
+  background-image: url('../images/sidebg.jpeg');
+  background-repeat: no-repeat;
+  background-size: 150% 100%;
   padding: 20px;
   height: 100vh;
   position: fixed;
