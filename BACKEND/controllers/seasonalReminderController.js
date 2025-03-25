@@ -10,7 +10,7 @@ const getActiveSeasonalReminders = async (req, res) => {
         });
 
         if (reminders.length === 0) {
-            return res.status(200).json({ message: "No active seasonal reminders" });
+            return res.status(200).json([]);
         }
 
         // 🎯 Format reminders for display
@@ -52,16 +52,8 @@ const handleReminderAction = async (req, res) => {
             await shoppingList.save();
         }
 
-        // ✅ Remove the processed item from the reminder
-        await SeasonalReminder.findByIdAndUpdate(reminderId, { $pull: { items: item } });
-
-        // ✅ If no items are left in the reminder, delete the entire reminder
-        const updatedReminder = await SeasonalReminder.findById(reminderId);
-        if (updatedReminder && updatedReminder.items.length === 0) {
-            await SeasonalReminder.findByIdAndDelete(reminderId);
-        }
-
-        res.status(200).json({ message: action === "add" ? `${item} added to shopping list!` : `${item} skipped and reminder removed!` });
+        // ✅ Store handled reminders in local storage
+        res.status(200).json({ message: action === "add" ? `${item} added to shopping list!` : `${item} skipped!`, handledItem: item });
     } catch (error) {
         res.status(500).json({ message: "Error processing reminder action", error: error.message });
     }

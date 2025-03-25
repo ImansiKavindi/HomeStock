@@ -1,46 +1,59 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import "../css/shoppingList.css";
+import useFetchReminders from "../hooks/useFetchReminders"; // Import hook to fetch reminders
+import Dashboard from "./Dashboard"; // Import Dashboard component
 
 const SmartShoppingList = () => {
+  const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [newItem, setNewItem] = useState("");
   const [selectedItems, setSelectedItems] = useState([]);
   const [editingItem, setEditingItem] = useState(null);
   const [editValue, setEditValue] = useState("");
+  const reminderCount = useFetchReminders(); // Get reminder count using custom hook
 
-  // ✅ Fetch items from backend
-  const fetchItems = async () => {
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        const response = await axios.get("http://localhost:8090/api/shopping-list");
+        setItems(response.data.items || []);
+      } catch (error) {
+        console.error("Error fetching items:", error);
+      }
+    };
+    fetchItems();
+  }, [reminderCount]);
+
+  const handleReadyToShop = async () => {
     try {
-      const response = await fetch("http://localhost:8090/api/shopping-list");
-      const data = await response.json();
-      setItems(data.items || []);
+      const response = await axios.get("http://localhost:8090/api/seasonal-reminders/active");
+      const activeReminders = response.data || [];
+      localStorage.setItem("reminderCount", activeReminders.length);
+      localStorage.setItem("storedReminders", JSON.stringify(activeReminders));
+      window.dispatchEvent(new Event("storage"));
+      navigate("/reminders");
     } catch (error) {
-      console.error("Error fetching items:", error);
-      setItems([]);
+      console.error("Error fetching reminders:", error);
     }
   };
 
-  useEffect(() => {
-    fetchItems();
-  }, []);
-
-  // ✅ Add an item
   const handleAddItem = async () => {
     if (newItem.trim() === "") return;
+    if (items.includes(newItem.trim())) {
+      alert("This item is already in the list.");
+      return;
+    }
     try {
-      await fetch("http://localhost:8090/api/shopping-list/add", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ item: newItem.trim() }),
-      });
+      await axios.post("http://localhost:8090/api/shopping-list/add", { item: newItem.trim() });
       setNewItem("");
-      fetchItems();
+      setItems([...items, newItem.trim()]);
     } catch (error) {
       console.error("Error adding item:", error);
     }
   };
 
-  // ✅ Select an item (checkbox toggle)
   const handleSelectItem = (item) => {
     setSelectedItems((prevSelected) =>
       prevSelected.includes(item)
@@ -49,134 +62,119 @@ const SmartShoppingList = () => {
     );
   };
 
-  // ✅ Remove selected items
-  const handleRemoveSelected = async () => {
-    if (selectedItems.length === 0) return alert("No items selected.");
-    
-    try {
-      await fetch("http://localhost:8090/api/shopping-list/remove", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ itemsToRemove: selectedItems }),
-      });
-      setSelectedItems([]);
-      fetchItems();
-    } catch (error) {
-      console.error("Error removing items:", error);
+  const handleEditItem = () => {
+    if (selectedItems.length === 1) {
+      setEditingItem(selectedItems[0]);
+      setEditValue(selectedItems[0]);
     }
   };
 
-  // ✅ Update an item
   const handleUpdateItem = async () => {
     if (!editingItem || editValue.trim() === "") return;
-
     try {
-      await fetch("http://localhost:8090/api/shopping-list/update", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ oldItem: editingItem, newItem: editValue.trim() }),
+      await axios.post("http://localhost:8090/api/shopping-list/update", {
+        oldItem: editingItem,
+        newItem: editValue.trim(),
       });
       setEditingItem(null);
       setEditValue("");
-      fetchItems();
+      setSelectedItems([]);
+      setItems(items.map((item) => (item === editingItem ? editValue.trim() : item)));
     } catch (error) {
       console.error("Error updating item:", error);
     }
   };
 
-  // ✅ Download shopping list as PDF
-  const handleDownloadPDF = () => {
-    window.open("http://localhost:8090/api/shopping-list/download", "_blank");
+  const handleRemoveSelected = async () => {
+    if (selectedItems.length === 0) return alert("No items selected.");
+    if (!window.confirm("Are you sure you want to remove the selected items?")) return;
+    try {
+      await axios.post("http://localhost:8090/api/shopping-list/remove", { itemsToRemove: selectedItems });
+      setItems(items.filter((item) => !selectedItems.includes(item)));
+      setSelectedItems([]);
+    } catch (error) {
+      console.error("Error removing items:", error);
+    }
   };
 
-  // ✅ Clear the entire shopping list (With Confirmation)
   const handleClearList = async () => {
-    const confirmClear = window.confirm("Are you sure you want to clear the shopping list?");
-    if (!confirmClear) return;
-  
+    if (!window.confirm("Are you sure you want to clear the shopping list?")) return;
     try {
-      const response = await fetch("http://localhost:8090/api/shopping-list/clear", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-      });
-  
-      if (!response.ok) {
-        throw new Error("Failed to clear shopping list");
-      }
-  
-      fetchItems(); // ✅ Refresh list after clearing
+      await axios.delete("http://localhost:8090/api/shopping-list/clear");
+      setItems([]);
+      setSelectedItems([]);
     } catch (error) {
       console.error("Error clearing shopping list:", error);
     }
   };
 
+  const handleDownloadPDF = async () => {
+    try {
+      const response = await axios.get("http://localhost:8090/api/shopping-list/download", { responseType: "blob" });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "shopping_list.pdf");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error("Error downloading shopping list:", error);
+    }
+  };
+
   return (
     <div className="shopping-list-container">
-      <h1>Smart Shopping List</h1>
+      {/* Wrap both components in a parent div */}
+      <div className="shopping-list-wrapper">
+        {/* Left side: Dashboard */}
+        <div className="dashboard-section">
+          <Dashboard />
+        </div>
 
-      {/* ✅ Add Item Section */}
-      <div className="add-item-section">
-        <input
-          type="text"
-          placeholder="Enter item..."
-          value={newItem}
-          onChange={(e) => setNewItem(e.target.value)}
-          className="item-input"
-        />
-        <button className="add-button" onClick={handleAddItem}>Add Item</button>
-      </div>
+        {/* Right side: Smart Shopping List */}
+        <div className="shopping-list-section">
+          <h1>Smart Shopping List</h1>
+          <button onClick={() => navigate("/reminders")}>Reminders ({reminderCount})</button>
+          <button onClick={handleReadyToShop}>Ready to Shop</button>
 
-      {/* ✅ Shopping List Items */}
-      <div className="shopping-list-items">
-        {items.length === 0 ? (
-          <p>Your shopping list is empty.</p>
-        ) : (
+          {/* Add Item Section */}
+          <div className="add-item-section">
+            <input
+              type="text"
+              placeholder="Enter item..."
+              value={newItem}
+              onChange={(e) => setNewItem(e.target.value)}
+              className="item-input"
+            />
+            <button onClick={handleAddItem}>Add Item</button>
+          </div>
+
+          {/* Shopping List */}
           <ul>
             {items.map((item, index) => (
-              <li key={index} className="shopping-list-item">
-                {/* ✅ Item Name on Left */}
+              <li key={index}>
                 {editingItem === item ? (
                   <>
-                    <input
-                      type="text"
-                      value={editValue}
-                      onChange={(e) => setEditValue(e.target.value)}
-                      className="edit-input"
-                    />
-                    <button onClick={handleUpdateItem} className="update-button">Save</button>
-                    <button onClick={() => setEditingItem(null)} className="cancel-button">Cancel</button>
+                    <input type="text" value={editValue} onChange={(e) => setEditValue(e.target.value)} />
+                    <button onClick={handleUpdateItem}>Save</button>
+                    <button onClick={() => setEditingItem(null)}>Cancel</button>
                   </>
                 ) : (
                   <>
-                    <span className="item-text">{item}</span>
-
-                    {/* ✅ Checkbox on Right */}
-                    <input
-                      type="checkbox"
-                      checked={selectedItems.includes(item)}
-                      onChange={() => handleSelectItem(item)}
-                      className="item-checkbox"
-                    />
+                    <span>{item}</span>
+                    <input type="checkbox" checked={selectedItems.includes(item)} onChange={() => handleSelectItem(item)} />
                   </>
                 )}
               </li>
             ))}
           </ul>
-        )}
-      </div>
 
-      {/* ✅ Show Buttons Only If Items Are Selected */}
-      {selectedItems.length > 0 && (
-        <div className="action-buttons">
-          <button className="edit-button" onClick={() => setEditingItem(selectedItems[0])}>Edit</button>
-          <button className="remove-button" onClick={handleRemoveSelected}>Remove Selected</button>
+          <button onClick={handleEditItem} disabled={selectedItems.length !== 1}>Edit Selected</button>
+          <button onClick={handleRemoveSelected} disabled={selectedItems.length === 0}>Remove Selected</button>
+          <button onClick={handleClearList}>Clear List</button>
+          <button onClick={handleDownloadPDF}>Download PDF</button>
         </div>
-      )}
-
-      {/* ✅ Other Action Buttons */}
-      <div className="action-buttons">
-        <button className="download-button" onClick={handleDownloadPDF}>Download PDF</button>
-        <button className="clear-button" onClick={handleClearList}>Clear List</button>
       </div>
     </div>
   );

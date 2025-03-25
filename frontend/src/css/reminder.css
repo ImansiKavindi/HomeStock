@@ -1,0 +1,29 @@
+.reminder-container {
+    max-width: 500px;
+    margin: auto;
+    text-align: center;
+  }
+  
+  .reminder-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .reminder-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .add-button, .skip-button, .back-button {
+    margin-left: 10px;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
+  .add-button { background: green; color: white; }
+  .skip-button { background: red; color: white; }
+  .back-button { background: blue; color: white; }
+  

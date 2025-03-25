@@ -251,3 +251,48 @@ button {
     gap: 5px;
   }
 }
+
+/* ✅ Fix Button Alignment in Mobile */
+@media (max-width: 600px) {
+  .action-buttons {
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    width: 100%;
+  }
+
+  .action-buttons button {
+    width: 100%;
+  }
+}
+
+/* Parent wrapper for both sections */
+.shopping-list-wrapper {
+  display: flex; /* Use flexbox to place dashboard and shopping list side by side */
+  gap: 30px; /* Space between the sections */
+}
+
+/* Dashboard section */
+.dashboard-section {
+  flex: 1; /* Takes up remaining space */
+  max-width: 350px; /* Optional: You can adjust the size */
+  overflow-y: auto; /* If the content is too long, allow scrolling */
+}
+
+/* Shopping list section */
+.shopping-list-section {
+  flex: 2; /* Makes the shopping list take up more space */
+  max-width: 1000px; /* Adjust width if needed */
+  overflow-y: auto;
+}
+
+/* General Page Styling */
+.shopping-list-container {
+  max-width: 100%;
+  margin: 40px auto;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
