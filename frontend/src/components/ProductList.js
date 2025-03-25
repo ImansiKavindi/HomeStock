@@ -60,24 +60,58 @@ const ProductList = () => {
 
   const editProduct = (product) => {
     setEditingProduct(product._id);
-    setUpdatedProduct({ ...product }); // Set the full product object to the updated state
+    setUpdatedProduct({
+      ...product,
+      Quantity: product.Quantity || { value: '', unit: '' }  // Ensure Quantity exists
+    });
   };
+  
 
   const handleChange = (e) => {
-    setUpdatedProduct({ ...updatedProduct, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+  
+    setUpdatedProduct((prevProduct) => {
+      if (name === "Quantity_value" || name === "Quantity_unit") {
+        return {
+          ...prevProduct,
+          Quantity: {
+            ...prevProduct.Quantity,
+            [name === "Quantity_value" ? "value" : "unit"]: value,
+          },
+        };
+      } else {
+        return {
+          ...prevProduct,
+          [name]: value,
+        };
+      }
+    });
   };
+  
+  
 
   const saveProduct = async (id) => {
     try {
-      await axios.put(`${API_URL}/${id}`, updatedProduct);
+      // Ensure the payload includes the updated Quantity field
+      const payload = {
+        ...updatedProduct,
+        Quantity: {
+          value: updatedProduct.Quantity?.value || 0,
+          unit: updatedProduct.Quantity?.unit || "",
+        },
+      };
+  
+      console.log("Sending Payload:", payload); // Debugging
+      await axios.put(`${API_URL}/${id}`, payload);
       setEditingProduct(null);
       fetchProducts();
-      Swal.fire('Success!', 'Product has been updated successfully!', 'success');
+      Swal.fire("Success!", "Product has been updated successfully!", "success");
     } catch (error) {
       console.error("Error updating product:", error);
-      Swal.fire('Error!', 'There was an error updating the product.', 'error');
+      Swal.fire("Error!", "There was an error updating the product.", "error");
     }
   };
+  
 
   const handleCategoryChange = (e) => {
     setSelectedCategory(e.target.value);
@@ -356,25 +390,13 @@ doc.line(200, 70, 200, 82); // Right border
     type="number"
     name="Quantity_value"
     min="1"
-    value={updatedProduct.Quantity?.value || ""}  // Safe fallback to empty string
-    onChange={(e) => setUpdatedProduct({
-      ...updatedProduct,
-      Quantity: {
-        ...updatedProduct.Quantity,
-        value: e.target.value
-      }
-    })}
+    value={updatedProduct.Quantity?.value || ""}
+    onChange={handleChange}
   />
   <select
     name="Quantity_unit"
-    value={updatedProduct.Quantity?.unit || ""}  // Safe fallback to empty string
-    onChange={(e) => setUpdatedProduct({
-      ...updatedProduct,
-      Quantity: {
-        ...updatedProduct.Quantity,
-        unit: e.target.value
-      }
-    })}
+    value={updatedProduct.Quantity?.unit || ""}
+    onChange={handleChange}
   >
     <option value="kg">Kilograms (kg)</option>
     <option value="L">Liters (L)</option>
@@ -385,6 +407,7 @@ doc.line(200, 70, 200, 82); // Right border
     <option value="Bottles">Bottles</option>
   </select>
 </td>
+
 
                     <td><input type="date" name="Expire_Date" value={updatedProduct.Expire_Date} onChange={handleChange} /></td>
                     <td>

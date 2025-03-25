@@ -1,3 +1,4 @@
+
 const ProductModel = require("../models/ProductModel");
 const multer = require("multer");
 const path = require("path");
@@ -77,8 +78,12 @@ exports.getProductById = async (req, res) => {
 
 // ✅ Update product by ID
 
+
 exports.updateProduct = async (req, res) => {
-  
+  upload(req, res, async function (err) {
+    if (err) {
+      return res.status(400).json({ success: false, message: "Image upload failed", error: err });
+    }
 
     try {
       const { P_name, Category, Price, QuantityValue, QuantityUnit, Expire_Date } = req.body;
@@ -88,17 +93,29 @@ exports.updateProduct = async (req, res) => {
         return res.status(404).json({ success: false, message: "Product not found" });
       }
 
-      // ✅ Update fields only if they are provided
+      // ✅ Update product fields if provided
       if (P_name !== undefined) product.P_name = P_name;
       if (Category !== undefined) product.Category = Category;
-      if (QuantityValue !== undefined && QuantityUnit !== undefined) {
-        product.Quantity = { value: QuantityValue, unit: QuantityUnit };
+      if (Price !== undefined) product.Price = Number(Price);
+      if (Expire_Date !== undefined) {
+        const parsedDate = new Date(Expire_Date);
+        if (isNaN(parsedDate.getTime())) {
+          return res.status(400).json({ success: false, message: "Invalid date format" });
+        }
+        product.Expire_Date = parsedDate;
       }
-      if (Price !== undefined) product.Price = Price;
-      if (Expire_Date !== undefined) product.Expire_Date = new Date(Expire_Date); // Convert date properly
 
-      if (QuantityValue !== undefined && QuantityUnit !== undefined) {
-        product.Quantity = { value: QuantityValue, unit: QuantityUnit };
+      // ✅ Correctly updating `Quantity`
+      if (QuantityValue !== undefined || QuantityUnit !== undefined) {
+        product.Quantity = {
+          value: QuantityValue !== undefined ? Number(QuantityValue) : product.Quantity.value,
+          unit: QuantityUnit !== undefined ? QuantityUnit : product.Quantity.unit,
+        };
+      }
+
+      // ✅ Handling image update
+      if (req.file) {
+        product.P_Image = req.file.filename; // Save new image filename
       }
 
       await product.save();
@@ -106,8 +123,8 @@ exports.updateProduct = async (req, res) => {
     } catch (error) {
       res.status(500).json({ success: false, message: error.message });
     }
-  };
-
+  });
+};
 
 // ✅ Delete product by ID
 exports.deleteProduct = async (req, res) => {
