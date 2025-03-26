@@ -4,6 +4,8 @@ import HomePage from './components/homepage';
 import Dashboard from './components/Dashboard';
 import InventoryPage from './components/inventory'; 
 import ProductList from './components/ProductList';
+import ExpenseTracker from './components/ExpenseTracker';
+import Budget from './components/Budget';
 import { ThemeProvider, createTheme } from '@mui/material/styles'; // Import ThemeProvider and 
 
 
@@ -27,7 +29,8 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/inventory" element={<ProductList />} /> {/* Inventory route */}
         <Route path="/add-product" element={<InventoryPage />} />
-        
+        <Route path="/expense-tracker" element={<ExpenseTracker />} />
+        <Route path="/budget" element={<Budget />} />
         
       </Routes>
     </ThemeProvider>
