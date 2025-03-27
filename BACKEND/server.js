@@ -22,11 +22,16 @@ app.use(express.json()); // Parse JSON requests
 
 // Route Imports
 const productRoutes = require('./routes/ProductRoutes');
-
+const expenseRoutes = require('./routes/ExpenseRoutes');
+const budgetRoutes = require('./routes/BudgetRoutes');
+const notificationRoutes = require('./routes/NotificationRoutes');
 
 
 // API Routes
 app.use('/api/products', productRoutes);
+app.use('/api/expenses', expenseRoutes);
+app.use('/api/budgets', budgetRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Serve static files
 
