@@ -13,6 +13,7 @@ const SmartShoppingList = () => {
   const [editingItem, setEditingItem] = useState(null);
   const [editValue, setEditValue] = useState("");
   const reminderCount = useFetchReminders(); // Get reminder count using custom hook
+  const [nonExpiringReminders, setNonExpiringReminders] = useState([]);
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -26,14 +27,41 @@ const SmartShoppingList = () => {
     fetchItems();
   }, [reminderCount]);
 
+  // Fetch non-expiring reminders when the component mounts
+  useEffect(() => {
+    const fetchNonExpiringReminders = async () => {
+      try {
+        const response = await axios.get("http://localhost:8090/api/reminders/non-expiring?showReminders=true");
+        setNonExpiringReminders(response.data || []); // Update non-expiring reminders state
+      } catch (error) {
+        console.error("Error fetching non-expiring reminders", error);
+      }
+    };
+    fetchNonExpiringReminders();
+  }, []);
+
   const handleReadyToShop = async () => {
     try {
-      const response = await axios.get("http://localhost:8090/api/seasonal-reminders/active");
-      const activeReminders = response.data || [];
-      localStorage.setItem("reminderCount", activeReminders.length);
-      localStorage.setItem("storedReminders", JSON.stringify(activeReminders));
+      // Fetch active seasonal reminders
+      const seasonalResponse = await axios.get("http://localhost:8090/api/seasonal-reminders/active");
+      const activeSeasonalReminders = seasonalResponse.data || [];
+
+      // Fetch active non-expiring reminders
+      const activeNonExpiringReminders = nonExpiringReminders.filter(reminder => reminder.active);
+
+      const totalReminders = activeSeasonalReminders.length + activeNonExpiringReminders.length;
+
+      // Store both seasonal and non-expiring reminders in localStorage
+      localStorage.setItem("reminderCount", totalReminders);
+      localStorage.setItem("storedReminders", JSON.stringify([...activeSeasonalReminders, ...activeNonExpiringReminders]));
+
+      // Set flag to indicate that Ready to Shop has been clicked
+      localStorage.setItem("readyToShopClicked", "true");
+
+      // Dispatch the event to notify other tabs
       window.dispatchEvent(new Event("storage"));
-      navigate("/reminders");
+
+      navigate("/reminders"); // Navigate to the reminder page
     } catch (error) {
       console.error("Error fetching reminders:", error);
     }
@@ -125,20 +153,16 @@ const SmartShoppingList = () => {
 
   return (
     <div className="shopping-list-container">
-      {/* Wrap both components in a parent div */}
       <div className="shopping-list-wrapper">
-        {/* Left side: Dashboard */}
         <div className="dashboard-section">
           <Dashboard />
         </div>
 
-        {/* Right side: Smart Shopping List */}
         <div className="shopping-list-section">
           <h1>Smart Shopping List</h1>
           <button onClick={() => navigate("/reminders")}>Reminders ({reminderCount})</button>
           <button onClick={handleReadyToShop}>Ready to Shop</button>
 
-          {/* Add Item Section */}
           <div className="add-item-section">
             <input
               type="text"
@@ -150,7 +174,6 @@ const SmartShoppingList = () => {
             <button onClick={handleAddItem}>Add Item</button>
           </div>
 
-          {/* Shopping List */}
           <ul>
             {items.map((item, index) => (
               <li key={index}>

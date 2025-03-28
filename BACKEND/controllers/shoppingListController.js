@@ -3,7 +3,7 @@ const SeasonalReminder = require("../models/seasonalReminder");
 const Reminder = require("../models/tempReminderModel");
 const PDFDocument = require("pdfkit");
 
-// ✅ Add item to shopping list (Prevents duplicates)
+// ✅ Add item to shopping list (Allows duplicates for seasonal items)
 exports.addItem = async (req, res) => {
     try {
         const { item, isSeasonal } = req.body;
@@ -17,6 +17,7 @@ exports.addItem = async (req, res) => {
         if (!shoppingList) {
             shoppingList = new ShoppingList({ items: [item], status: "pending" });
         } else {
+            // Prevent duplicates only if the item is NOT seasonal
             if (!isSeasonal && shoppingList.items.includes(item)) {
                 return res.status(400).json({ message: "This item is already in the shopping list." });
             }

@@ -4,6 +4,12 @@ const ShoppingList = require("../models/shoppingList");
 // ✅ Get reminders for non-expiring items
 const getNonExpiringReminders = async (req, res) => {
   try {
+    // Check if the showReminders flag is set to true
+    const { showReminders } = req.query;
+    if (showReminders !== "true") {
+      return res.json([]); // If not set, don't return any reminders
+    }
+
     const today = new Date();
 
     const reminders = await TempReminder.find({
@@ -21,7 +27,7 @@ const getNonExpiringReminders = async (req, res) => {
       return {
         _id: item._id,
         itemName: item.itemName,
-        reminderMessage: `You have been using ${item.itemName} for ${daysUsed} days. Do you want to get a new one?`,
+        reminderMessage: `You have been using ${item.itemName} for ${daysUsed} days. Do you want to get a new one?`, // ✅ Fixed syntax
       };
     });
 
@@ -34,6 +40,10 @@ const getNonExpiringReminders = async (req, res) => {
 // ✅ Update reminder when user clicks "Add" or "Skip"
 const updateReminder = async (req, res) => {
   const { itemId, action } = req.body;
+
+  if (!["add", "skip"].includes(action)) {
+    return res.status(400).json({ message: "Invalid action. Please use 'add' or 'skip'." });
+  }
 
   try {
     const item = await TempReminder.findById(itemId);
@@ -59,9 +69,17 @@ const updateReminder = async (req, res) => {
         await shoppingList.save();
       }
 
-      // ✅ Delete the reminder after adding to shopping list
-      await TempReminder.findByIdAndDelete(itemId);
-      return res.json({ message: "Item added to shopping list and reminder deleted" });
+      // ✅ Update the reminder interval to the current usage period
+      const daysUsed = Math.floor((new Date() - item.lastPurchasedDate) / (24 * 60 * 60 * 1000));
+      item.reminderInterval = daysUsed; // ✅ Smart learning update
+
+      // ✅ Update last purchased date
+      item.lastPurchasedDate = new Date();
+
+      // ✅ Ensure database update
+      await item.save();  // 🔥 Make sure this is awaited!
+
+      return res.json({ message: "Item added to shopping list and reminder interval updated" });
     }
 
     if (action === "skip") {
@@ -72,8 +90,7 @@ const updateReminder = async (req, res) => {
       }
 
       await item.save();
-      await TempReminder.findByIdAndDelete(itemId); // ✅ Delete reminder after skipping
-      return res.json({ message: "Reminder skipped and deleted" });
+      return res.json({ message: "Reminder skipped and interval updated" });
     }
   } catch (error) {
     res.status(500).json({ message: "Server Error", error });

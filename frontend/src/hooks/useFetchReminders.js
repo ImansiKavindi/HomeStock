@@ -11,16 +11,17 @@ const useFetchReminders = () => {
             setReminderCount(newCount); // This will update the state in the component
         };
 
+        // Listen for changes in localStorage from other tabs or components
         window.addEventListener("storage", handleStorageChange);
 
         // Sync count when component mounts
         handleStorageChange();
 
+        // Cleanup listener when the component unmounts
         return () => window.removeEventListener("storage", handleStorageChange);
-    }, []);
+    }, []); // Run once when the component mounts
 
     return reminderCount;
 };
 
 export default useFetchReminders;
- 
