@@ -1,3 +1,4 @@
+ 
 require('dotenv').config();
 const express = require("express");
 const mongoose = require("mongoose");
@@ -9,6 +10,20 @@ const PORT = process.env.PORT || 8090;
 
 // ✅ Proper CORS Configuration
 app.use(cors({
+    origin: '*', // Temporarily allow all origins for testing
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type'],
+    credentials: true,
+}));
+
+
+app.use(express.json()); // Using express built-in middleware for JSON parsing
+
+// Route Imports
+const productRoutes = require('./routes/ProductRoutes');
+const seasonalReminder = require("./routes/seasonalReminder");
+const shoppingListRoutes = require("./routes/shoppingList"); 
+const reminderRoutes = require("./routes/reminderRoutes");
     origin: /http:\/\/localhost:\d+/, // Allows localhost on any port
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -29,6 +44,11 @@ const notificationRoutes = require('./routes/NotificationRoutes');
 
 // API Routes
 app.use('/api/products', productRoutes);
+app.use("/api/seasonal-reminders", seasonalReminder);
+app.use("/api/shopping-list", shoppingListRoutes);
+app.use("/api/reminders", reminderRoutes);
+
+
 app.use('/api/expenses', expenseRoutes);
 app.use('/api/budgets', budgetRoutes);
 app.use('/api/notifications', notificationRoutes);
@@ -51,3 +71,4 @@ app.use((req, res, next) => {
 app.listen(PORT, () => {
     console.log(`🚀 Server is up and running on port: ${PORT}`);
 });
+ 

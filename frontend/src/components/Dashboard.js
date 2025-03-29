@@ -25,7 +25,8 @@ const Dashboard = () => {
       {/* Main Content */}
       <div className="dashboard-content">
         {sections.map((section) => (
-          <div key={section.id} className="dashboard-card" onClick={() => navigate(`/${section.id}`)}>
+          <div key={section.id} className="dashboard-card"  onClick={() => navigate(section.id === 'shopping-list' ? '/shopping-list' : `/${section.id}`)}
+>
             <img src={section.image} alt={section.title} className="card-image" />
             <div className="card-content">
               <h2>{section.title}</h2>

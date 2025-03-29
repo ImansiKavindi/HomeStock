@@ -1,0 +1,136 @@
+ /* Reminder Container */
+.reminder-container {
+    max-width: 650px;
+    margin: 50px auto;
+    padding: 25px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    color: #333;
+}
+
+/* Heading */
+.reminder-container h2 {
+    font-size: 22px;
+    margin-bottom: 20px;
+    color: #2c3e50;
+    font-weight: 600;
+    border-bottom: 2px solid #eaeaea;
+    padding-bottom: 8px;
+}
+
+/* Reminder List */
+.reminder-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+}
+
+/* Reminder Item */
+.reminder-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px;
+    margin-bottom: 12px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border: 1px solid #e0e0e0;
+    transition: all 0.3s ease;
+}
+
+/* Hover effect */
+.reminder-item:hover {
+    background: #f1f1f1;
+    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Reminder Message */
+.reminder-item p {
+    flex-grow: 1;
+    font-size: 15px;
+    color: #444;
+    text-align: left;
+    margin-right: 18px; /* 0.5cm space between message and buttons */
+}
+
+/* Button Container */
+.button-group {
+    display: flex;
+    gap: 18px; /* 0.5cm space between Add and Skip buttons */
+}
+
+/* Buttons */
+.add-button, .skip-button, .back-button {
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.add-button {
+    background: #27ae60;
+    color: white;
+}
+.add-button:hover {
+    background: #219150;
+}
+
+.skip-button {
+    background: #e74c3c;
+    color: white;
+}
+.skip-button:hover {
+    background: #c0392b;
+}
+
+.back-button {
+    background: #2980b9;
+    color: white;
+    margin-top: 20px;
+}
+.back-button:hover {
+    background: #21618c;
+}
+
+/* Empty Reminder Message */
+.reminder-container p {
+    font-size: 15px;
+    color: #666;
+    padding: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .reminder-container {
+        max-width: 90%;
+        padding: 20px;
+    }
+    
+    .reminder-item {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px;
+    }
+
+    .reminder-item p {
+        margin-bottom: 10px;
+        margin-right: 0; /* Reset margin for small screens */
+    }
+
+    .button-group {
+        width: 100%;
+        justify-content: flex-end;
+        gap: 12px; /* Adjusted for mobile */
+    }
+
+    .add-button, .skip-button {
+        width: auto;
+    }
+}
