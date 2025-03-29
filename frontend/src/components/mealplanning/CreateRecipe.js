@@ -9,8 +9,9 @@ import {
 } from '@mui/material';
 import { 
   Add as AddIcon, 
-  ArrowBack as ArrowBackIcon,
-  Delete as DeleteIcon
+  Close as CloseIcon,
+  Delete as DeleteIcon,
+  ArrowBack as ArrowBackIcon
 } from '@mui/icons-material';
 import '../../css/MealPlanning.css';
 import Sidebar from '../Sidebar';
@@ -60,31 +61,30 @@ const CreateRecipe = () => {
   useEffect(() => {
     if (id) {
       setIsEditing(true);
-      
-      const fetchRecipeData = async () => {
-        try {
-          setLoading(true);
-          const response = await axios.get(`http://localhost:8090/api/meal-plans/recipes/${id}`);
-          const recipeData = response.data.recipe;
-          
-          setRecipe(recipeData);
-          
-          // Set selected tags from the recipe
-          if (recipeData.tags && recipeData.tags.length > 0) {
-            setSelectedTags(recipeData.tags);
-          }
-          
-          setLoading(false);
-        } catch (err) {
-          setError('Failed to load recipe data');
-          console.error(err);
-          setLoading(false);
-        }
-      };
-
       fetchRecipeData();
     }
   }, [id]);
+
+  const fetchRecipeData = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`http://localhost:8090/api/meal-plans/recipes/${id}`);
+      const recipeData = response.data.recipe;
+      
+      setRecipe(recipeData);
+      
+      // Set selected tags from the recipe
+      if (recipeData.tags && recipeData.tags.length > 0) {
+        setSelectedTags(recipeData.tags);
+      }
+      
+      setLoading(false);
+    } catch (err) {
+      setError('Failed to load recipe data');
+      console.error(err);
+      setLoading(false);
+    }
+  };
 
   // Handle input changes for basic recipe information
   const handleInputChange = (e) => {
@@ -175,6 +175,20 @@ const CreateRecipe = () => {
       tags: recipe.tags.filter(tag => tag !== tagToRemove)
     });
     setSelectedTags(selectedTags.filter(tag => tag !== tagToRemove));
+  };
+
+  // Validate the form before submission
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!recipe.name.trim()) newErrors.name = 'Recipe name is required';
+    if (!recipe.cookingTime) newErrors.cookingTime = 'Cooking time is required';
+    if (!recipe.servings) newErrors.servings = 'Number of servings is required';
+    if (!recipe.instructions.trim()) newErrors.instructions = 'Instructions are required';
+    if (recipe.ingredients.length === 0) newErrors.ingredientsList = 'At least one ingredient is required';
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   // Handle file selection
