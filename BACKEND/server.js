@@ -28,9 +28,10 @@ if (!fs.existsSync(uploadDir)) {
 // Route Imports
 const productRoutes = require('./routes/ProductRoutes');
 const mealPlanRoutes = require('./routes/MealPlanRoutes');
-const expenseRoutes = require('./routes/ExpenseRoutes');
-const budgetRoutes = require('./routes/BudgetRoutes');
-const notificationRoutes = require('./routes/NotificationRoutes');
+// These routes will be added by other team members
+// const expenseRoutes = require('./routes/ExpenseRoutes');
+// const budgetRoutes = require('./routes/BudgetRoutes');
+// const notificationRoutes = require('./routes/NotificationRoutes');
 
 // Serve static files from uploads directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -38,9 +39,10 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // API Routes
 app.use('/api/products', productRoutes);
 app.use('/api/meal-plans', mealPlanRoutes);
-app.use('/api/expenses', expenseRoutes);
-app.use('/api/budgets', budgetRoutes);
-app.use('/api/notifications', notificationRoutes);
+// These routes will be added by other team members
+// app.use('/api/expenses', expenseRoutes);
+// app.use('/api/budgets', budgetRoutes);
+// app.use('/api/notifications', notificationRoutes);
 
 // MongoDB Connection
 const URL = process.env.MONGODB_URL;
