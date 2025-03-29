@@ -45,9 +45,12 @@
 }
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 /* Hover effect */
 .reminder-item:hover, .non-expiring:hover {
 =======
+=======
+>>>>>>> Stashed changes
 .reminder-item:hover {
 >>>>>>> Stashed changes
     background: #f1f1f1;
@@ -61,6 +64,7 @@
     color: #444;
     text-align: left;
     margin-right: 18px;
+<<<<<<< Updated upstream
 }
 
 <<<<<<< Updated upstream
@@ -71,6 +75,11 @@
 
 /* Button Container */
 =======
+/* Button Group */
+>>>>>>> Stashed changes
+=======
+}
+
 /* Button Group */
 >>>>>>> Stashed changes
 .button-group {
@@ -146,9 +155,12 @@
         padding: 20px;
     }
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     
     .reminder-item, .non-expiring {
 =======
+=======
+>>>>>>> Stashed changes
 
     .reminder-item {
 >>>>>>> Stashed changes
@@ -167,4 +179,8 @@
         justify-content: flex-end;
         gap: 12px;
     }
+<<<<<<< Updated upstream
 }
+=======
+}
+>>>>>>> Stashed changes

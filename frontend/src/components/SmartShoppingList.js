@@ -5,8 +5,11 @@ import Sidebar from './Sidebar'; // Import Sidebar component
 import "../css/shoppingList.css";
 import useFetchReminders from "../hooks/useFetchReminders"; // Import hook to fetch reminders
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import Swal from 'sweetalert2'; // Import SweetAlert2
 import { jsPDF } from "jspdf"; // Import jsPDF
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 
@@ -275,7 +278,11 @@ const SmartShoppingList = () => {
   return (
     <div className="shopping-list-container">
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
       <Sidebar className="sidebar" /> {/* Sidebar added here */}
+=======
+      <Sidebar /> {/* Sidebar added here */}
+>>>>>>> Stashed changes
 =======
       <Sidebar /> {/* Sidebar added here */}
 >>>>>>> Stashed changes
