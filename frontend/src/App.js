@@ -11,6 +11,8 @@ import CreateRecipe from './components/mealplanning/CreateRecipe';
 import MealPlanList from './components/mealplanning/MealPlanList';
 import MealPlanDetails from './components/mealplanning/MealPlanDetails';
 import CreateMealPlan from './components/mealplanning/CreateMealPlan';
+import ExpenseTracker from './components/ExpenseTracker';
+import Budget from './components/Budget';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { CacheProvider } from '@emotion/react';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -48,17 +50,13 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/inventory" element={<ProductList />} />
           <Route path="/add-product" element={<InventoryPage />} />
-
-          {/* Meal Planning Routes */}
+          <Route path="/expense-tracker" element={<ExpenseTracker />} />
+          <Route path="/budget" element={<Budget />} />
           <Route path="/meal-planning" element={<MealPlanning />} />
-          <Route path="/meal-planning/recipes" element={<RecipeList />} />
-          <Route path="/meal-planning/recipes/create" element={<CreateRecipe />} />
-          <Route path="/meal-planning/recipes/edit/:id" element={<CreateRecipe />} />
-          <Route path="/meal-planning/recipes/:id" element={<RecipeDetails />} />
-          <Route path="/meal-planning/meal-plans" element={<MealPlanList />} />
-          <Route path="/meal-planning/meal-plans/create" element={<CreateMealPlan />} />
-          <Route path="/meal-planning/meal-plans/edit/:id" element={<CreateMealPlan />} />
-          <Route path="/meal-planning/meal-plans/:id" element={<MealPlanDetails />} />
+          <Route path="/create-recipe" element={<CreateRecipe />} />
+          <Route path="/create-meal-plan" element={<CreateMealPlan />} />
+          <Route path="/recipe/:id" element={<RecipeDetails />} />
+          <Route path="/meal-plan/:id" element={<MealPlanDetails />} />
         </Routes>
       </ThemeProvider>
     </CacheProvider>
