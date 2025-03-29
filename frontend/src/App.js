@@ -15,6 +15,8 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { CacheProvider } from '@emotion/react';
 import CssBaseline from '@mui/material/CssBaseline';
 import createEmotionCache from './createEmotionCache';
+import ExpenseTracker from './components/ExpenseTracker';
+import Budget from './components/Budget';
 
 // Client-side cache, shared for the whole session
 const clientSideEmotionCache = createEmotionCache();
@@ -48,6 +50,8 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/inventory" element={<ProductList />} />
           <Route path="/add-product" element={<InventoryPage />} />
+          <Route path="/expense-tracker" element={<ExpenseTracker />} />
+          <Route path="/budget" element={<Budget />} />
 
           {/* Meal Planning Routes */}
           <Route path="/meal-planning" element={<MealPlanning />} />
