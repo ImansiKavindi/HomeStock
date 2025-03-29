@@ -53,6 +53,7 @@ function App() {
           <Route path="/expense-tracker" element={<ExpenseTracker />} />
           <Route path="/budget" element={<Budget />} />
           <Route path="/meal-planning" element={<MealPlanning />} />
+          <Route path="/recipes" element={<RecipeList />} />
           <Route path="/create-recipe" element={<CreateRecipe />} />
           <Route path="/create-meal-plan" element={<CreateMealPlan />} />
           <Route path="/recipe/:id" element={<RecipeDetails />} />
