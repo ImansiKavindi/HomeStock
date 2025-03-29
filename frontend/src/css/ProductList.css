@@ -1,107 +1,213 @@
-/* General Container Styling */
 .product-container {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    font-family: 'Poppins', sans-serif;
-    background-color: #f4f4f9;
-    min-height: 100vh;
-}
-.sidebar {
-    width: 250px;
-    height: 100vh;
-    background: #2c3e50;
-    color: white;
-    padding: 20px;
-}
-
-h2 {
-    color: #333;
+    
+  }
+  
+  .product-content {
+    flex: 1;
+    padding: 30px;
+    margin-left: 300px;
+    margin-right: 100px;
+    background-color: #ffffff;
+    background-image: url('../images/inventory.jpeg');
+  background-size: 150% 280%;/* Adjust to your needs */
+  background-color: rgb(255, 255, 255);
+  background-position: right;
+  background-repeat: no-repeat;
+    width: 50px;
+    height: 80%;
+    margin-top: 60px;
+    border-radius: 10px;
+  }
+  
+  h2 {
+    font-size: 2rem;
+    color: #000000;
     margin-bottom: 20px;
-}
-
-/* Filters */
-select, input[type="date"] {
+    text-align: center;
+  }
+  
+  .search-bar {
+    width: 100%;
     padding: 10px;
-    margin: 10px;
-    border-radius: 8px;
+    margin-bottom: 20px;
     border: 1px solid #ddd;
-    font-size: 16px;
-    outline: none;
-}
+    border-radius: 5px;
+  }
+  
+  .filters {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .filters select, .filters input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  
+  
 
-button {
-    background: linear-gradient(135deg, #007BFF, #00D4FF);
+
+  .button-container {
+    display: flex; /* Aligns items in a row */
+    gap: 65%; /* Adds space between the buttons */
+    margin-bottom: 20px;
+  }
+
+  
+  .add-product-btn, .download-report-btn {
+    background: linear-gradient(to right, #003b00be ,#5ef466a6);
     color: white;
+    padding: 10px 20px;
     border: none;
-    padding: 10px 15px;
+    border-radius: 5px;
     font-size: 16px;
-    border-radius: 8px;
     cursor: pointer;
-    transition: all 0.3s ease-in-out;
-}
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.3s ease;
+  }
 
-button:hover {
-    background: linear-gradient(135deg, #0056b3, #009acd);
-}
+  .add-product-btn:hover , .download-report-btn:hover {
+    background-color: #033c1a;
 
-/* Table Styling */
-table {
-    width: 90%;
-    max-width: 1200px;
+  }
+  
+  .report-section {
+    /* Additional styling for the report section if needed */
+  }
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  .product-table {
+    width: 100%;
+    table-layout: fixed;
     border-collapse: collapse;
-    margin-top: 20px;
-    background: white;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-thead {
-    background: #007BFF;
-    color: white;
-    text-transform: uppercase;
-}
-
-thead th {
-    padding: 12px;
+  }
+  
+  .product-table th{
+    padding: 12px 15px;
+    border: 1px solid #ddd;
     text-align: left;
-}
+  }
 
-tbody tr {
-    border-bottom: 1px solid #ddd;
-    transition: background 0.3s;
-}
+  .product-table td {
+    border: 1px solid #ddd;
+    text-align: center;
+    padding: 7px 8px;
+  }
+  .product-table tr {
+    height: 50px;  /* Adjust as needed */
+  }
+  
+  
+  .product-table th {
+    background-color: #388e3c;
+    color: white;
+  }
+  
+  .product-table td {
+    background-color: #f9f9f9;
+  }
+  
+  .product-img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 5px;
+  }
+  
+  button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    margin-left: 10px;
+  }
+  
+  
 
-tbody tr:hover {
-    background: #f1f1f1;
-}
-
-td {
-    padding: 12px;
-}
-
-/* Editable Inputs */
-td input {
+  input[type="text"], input[type="number"], input[type="date"] {
     width: 100%;
     padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    outline: none;
-}
+    border: px solid #ddd;
+    border-radius: 5px;
+  }
 
-/* Action Buttons */
-td button {
-    margin: 0 5px;
-    padding: 8px 12px;
+  .product-table input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 85px;
+    height: 30px;
     font-size: 14px;
-}
+  }
+  
+  /* General styling for action buttons */
+.icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    transition: 0.2s ease-in-out;
+  }
 
-/* Expiry Status */
-td:last-child {
-    font-weight: bold;
-    text-align: center;
-}
-
-
+  
+  
+  /* Edit button styling */
+  .edit-btn {
+    color: #ffffff; /* Blue */
+    background-color: #042ac1;
+  }
+  
+  
+  
+  /* Delete button styling */
+  .delete-btn {
+    color: #ffffff; /* Blue */
+    background-color: #b90808;
+  }
+  
+  
+  /* Save button styling */
+  .save-btn {
+    color: #ffffff; /* Blue */
+    background-color: #077605;
+  }
+  
+  
+  
+  /* Cancel button styling */
+  .cancel-btn {
+    color: #ffffff; /* Blue */
+    background-color: #000000;
+  }
+  
+ 
+  
+  /* Aligning buttons properly in the Actions column */
+  td .icon-btn {
+    margin-right: 8px; /* Space between buttons */
+  }

@@ -13,7 +13,9 @@ const Sidebar = () => {
       </div>
       <ul>
         <li><a onClick={() => navigate('/')}>Home</a></li>
+        <li><a onClick={() => navigate('/dashboard')}>Dashboard</a></li>
         <li><a onClick={() => navigate('/inventory')}>Inventory</a></li>
+        <li><a onClick={() => navigate('/expense-tracker')}>Expense Tracker</a></li>
         <li><a onClick={() => navigate('/budget')}>Budget</a></li>
         <li><a onClick={() => navigate('/meal-planning')}>Meal Planning</a></li>
         <li><a onClick={() => navigate('/shopping-list')}>Shopping List</a></li>

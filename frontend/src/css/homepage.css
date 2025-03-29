@@ -114,12 +114,13 @@ body {
 }
 
 .hero-text button {
-  background-color: #024f1e;
+  background: linear-gradient(to right, #023102ac, #97f19bb4);
   color: white;
   font-size: 18px;
   padding: 12px 24px;
-  border-radius: 50px;
+  border-radius: 20px;
   border: none;
+  width: 50%;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
