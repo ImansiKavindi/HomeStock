@@ -9,7 +9,8 @@ import {
 } from '@mui/material';
 import { 
   Add as AddIcon, 
-  ArrowBack as ArrowBackIcon
+  ArrowBack as ArrowBackIcon,
+  Delete as DeleteIcon
 } from '@mui/icons-material';
 import '../../css/MealPlanning.css';
 import Sidebar from '../Sidebar';
@@ -59,30 +60,31 @@ const CreateRecipe = () => {
   useEffect(() => {
     if (id) {
       setIsEditing(true);
+      
+      const fetchRecipeData = async () => {
+        try {
+          setLoading(true);
+          const response = await axios.get(`http://localhost:8090/api/meal-plans/recipes/${id}`);
+          const recipeData = response.data.recipe;
+          
+          setRecipe(recipeData);
+          
+          // Set selected tags from the recipe
+          if (recipeData.tags && recipeData.tags.length > 0) {
+            setSelectedTags(recipeData.tags);
+          }
+          
+          setLoading(false);
+        } catch (err) {
+          setError('Failed to load recipe data');
+          console.error(err);
+          setLoading(false);
+        }
+      };
+
       fetchRecipeData();
     }
-  }, [id, fetchRecipeData]);
-
-  const fetchRecipeData = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.get(`http://localhost:8090/api/meal-plans/recipes/${id}`);
-      const recipeData = response.data.recipe;
-      
-      setRecipe(recipeData);
-      
-      // Set selected tags from the recipe
-      if (recipeData.tags && recipeData.tags.length > 0) {
-        setSelectedTags(recipeData.tags);
-      }
-      
-      setLoading(false);
-    } catch (err) {
-      setError('Failed to load recipe data');
-      console.error(err);
-      setLoading(false);
-    }
-  };
+  }, [id]);
 
   // Handle input changes for basic recipe information
   const handleInputChange = (e) => {
