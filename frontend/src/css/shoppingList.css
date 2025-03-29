@@ -1,4 +1,5 @@
 .shopping-list-container {
+<<<<<<< Updated upstream
   display: flex;
   justify-content: flex-start; /* Align both sidebar and content to the left */
   align-items: flex-start;
@@ -31,6 +32,27 @@
   height: 80%;
   margin-top: 60px;
   border-radius: 10px;
+=======
+  max-width: 75%;
+  margin: 40px auto;
+  padding: 30px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  background-image: url('../images/inventory.jpeg');
+  background-size: cover;
+  background-position: center right;
+  background-repeat: no-repeat;
+  margin-left: 20%;
+  margin-right: 5%;
+}
+
+/* Shopping List Section */
+.shopping-list-section {
+  margin-top: 25px;
+  text-align: center;
+>>>>>>> Stashed changes
 }
 
 /* List Items - Centered */
@@ -41,7 +63,11 @@ ul {
   text-align: center;
   display: flex;
   flex-direction: column;
+<<<<<<< Updated upstream
   align-items: center;
+=======
+  align-items: center; /* This centers the list items horizontally */
+>>>>>>> Stashed changes
 }
 
 li {
@@ -55,7 +81,11 @@ li {
   border-radius: 8px;
   margin-bottom: 8px;
   transition: background 0.3s ease;
+<<<<<<< Updated upstream
   width: 80%;
+=======
+  width: 80%; /* Add a width to ensure items don't stretch across the container */
+>>>>>>> Stashed changes
 }
 
 li:hover {
@@ -68,6 +98,7 @@ li span {
   text-align: center;
   font-weight: 500;
   color: #333;
+<<<<<<< Updated upstream
   display: block;
 }
 
@@ -210,5 +241,131 @@ li span {
   .remove-selected-btn, .clear-list-btn, .download-pdf-btn {
     width: 100%;
     font-size: 14px;
+  }
+=======
+  display: block; /* Make sure the text is centered properly */
+  text-align: center;
+>>>>>>> Stashed changes
+}
+
+/* Checkbox Right Alignment */
+.checkbox {
+  margin-left: 15px;
+  transform: scale(1.2);
+  cursor: pointer;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+  order: 2; /* Move checkbox to the right */
+}
+
+.checkbox:checked {
+  background-color: #5ef466a6; /* Same color as button */
+  border-color: #5ef466a6;
+}
+
+/* Input and Add Button Row */
+.input-container {
+  display: flex; /* Aligns input and button in a row */
+  justify-content: center; /* Centers the row */
+  gap: 10px; /* Adds space between the input and button */
+  margin-top: 20px;
+}
+
+.input-container input {
+  padding: 10px;
+  font-size: 20px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  width: 60%;
+  box-sizing: border-box;
+}
+
+.input-container .Add {
+  background: linear-gradient(to right, #003b00be, #5ef466a6);
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.input-container .Add:hover {
+  background-color: #033c1a;
+}
+
+/* Button Container */
+.button-container {
+  display: flex; /* Aligns items in a row */
+  flex-wrap: wrap; /* Allow buttons to wrap in smaller screens */
+  gap: 15px; /* Adds space between the buttons */
+  justify-content: center; /* Centers the buttons */
+  margin-top: 20px;
+}
+
+/* Button Styles */
+.Add, .Save, .Cancel ,.ready-to-shop-btn, .reminders-btn, .add-item-btn, .edit-selected-btn, 
+.remove-selected-btn, .clear-list-btn, .download-pdf-btn {
+  background: linear-gradient(to right, #003b00be, #5ef466a6);
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.Add:hover, .Save:hover, .Cancel:hover,.ready-to-shop-btn:hover, .reminders-btn:hover, .add-item-btn:hover, 
+.edit-selected-btn:hover, .remove-selected-btn:hover, .clear-list-btn:hover, 
+.download-pdf-btn:hover {
+  background-color: #033c1a;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .shopping-list-container {
+    max-width: 90%;
+    padding: 20px;
+    margin-left: 5%;
+    margin-right: 5%;
+  }
+
+  ul {
+    padding-left: 0;
+  }
+
+  li {
+    font-size: 16px;
+    flex-direction: column;
+    padding: 12px;
+  }
+
+  input[type="checkbox"] {
+    margin-top: 10px;
+  }
+
+  .btn {
+    width: 100%;
+    font-size: 18px;
+  }
+
+  .button-container {
+    flex-direction: column; /* Stack buttons vertically on smaller screens */
+    gap: 10px;
+  }
+
+  .input-container {
+    flex-direction: column; /* Stack input and button on smaller screens */
+  }
+
+  .input-container input {
+    width: 100%; /* Make the input box full width on smaller screens */
   }
 }
