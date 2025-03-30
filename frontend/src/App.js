@@ -57,7 +57,7 @@ function App() {
           <Route path="/inventory" element={<ProductList />} />
           <Route path="/add-product" element={<InventoryPage />} />
           <Route path="/shopping-list" element={<SmartShoppingList />} />
-          <Route path="/reminder" element={<Reminder />} />
+          <Route path="/reminders" element={<Reminder />} />
           <Route path="/expense-tracker" element={<ExpenseTracker />} />
           <Route path="/budget" element={<Budget />} />
 

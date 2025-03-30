@@ -8,17 +8,7 @@
 }
 
 /* Sidebar */
-.sidebar {
-  width: 250px; /* Sidebar width */
-  position: fixed; /* Keep sidebar fixed on the left side */
-  top: 0;
-  left: 0;
-  height: 100vh; /* Full height of the screen */
-  background-color: #f8f9fa;
-  padding: 20px;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-  overflow-y: auto; 
-}
+
 
 /* Shopping List Wrapper */
 .shopping-list-wrapper {
@@ -62,18 +52,20 @@ li {
   align-items: center;
   justify-content: space-between;
   padding: 14px;
-  border-bottom: 1px solid #e0e0e0;
+ 
   font-size: 18px;
-  background: #f9f9f9;
-  border-radius: 8px;
-  margin-bottom: 8px;
+ 
+  
   transition: background 0.3s ease;
   width: 80%;
 }
-
 li:hover {
-  background: #DEDEDE;
+  background: rgba(2, 49, 2, 0.2); /* Subtle green shade */
+  color: #013801; /* Darker green for text */
+  cursor: pointer;
+  border-radius: 10px;
 }
+
 
 /* Item Name - Centered */
 li span {
