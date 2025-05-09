@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Sidebar from './Sidebar';
 import NotificationBell from './NotificationBell';
-import { FaSave, FaDollarSign, FaChartLine, FaMoneyBillWave } from 'react-icons/fa';
+import { FaSave, FaDollarSign, FaChartLine, FaMoneyBillWave, FaFilePdf } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import '../css/Budget.css';
 
@@ -113,6 +113,51 @@ const Budget = () => {
     return 'progress-normal';
   };
 
+  // Generate and download PDF report
+  const downloadPdfReport = async () => {
+    try {
+      Swal.fire({
+        title: 'Generating report',
+        text: 'Please wait...',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+      
+      // Make request to generate report and receive file
+      const response = await axios.get(`${BUDGET_API_URL}/report`, {
+        responseType: 'blob'
+      });
+      
+      // Create a blob link to download
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `budget-report-${new Date().getTime()}.pdf`);
+      
+      // Append to html page and click the link to trigger download
+      document.body.appendChild(link);
+      link.click();
+      
+      // Clean up and remove the link
+      link.parentNode.removeChild(link);
+      
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: 'Budget report downloaded successfully'
+      });
+    } catch (error) {
+      console.error('Error downloading report:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Failed to download the budget report'
+      });
+    }
+  };
+
   return (
     <div className="budget-container">
       <Sidebar />
@@ -148,6 +193,17 @@ const Budget = () => {
           <div className="loading" style={{ textAlign: 'center', padding: '20px' }}>Loading...</div>
         ) : budget ? (
           <>
+            {/* PDF Report Button */}
+            <div className="report-section">
+              <button 
+                className="download-report-btn" 
+                onClick={downloadPdfReport}
+              >
+                <FaFilePdf style={{ marginRight: '8px' }} />
+                Download PDF Report
+              </button>
+            </div>
+            
             {/* Budget Summary */}
             <div className="budget-summary">
               <div className="summary-card budget">
