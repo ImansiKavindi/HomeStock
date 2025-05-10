@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const { getActiveSeasonalReminders, handleReminderAction } = require("../controllers/seasonalReminderController");
+const { getActiveSeasonalReminders, addSeasonalItemsToShoppingList } = require("../controllers/seasonalReminderController");
 
-// ✅ Get active reminders
+// Route to get active seasonal reminders
 router.get("/active", getActiveSeasonalReminders);
 
-// ✅ Handle "Add" or "Skip" action
-router.post("/action", handleReminderAction);
+// Endpoint to trigger adding seasonal items to the shopping list
+router.post("/add-seasonal-items", addSeasonalItemsToShoppingList);
 
 module.exports = router;

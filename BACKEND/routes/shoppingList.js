@@ -20,4 +20,10 @@ router.delete("/clear", shoppingListController.clearShoppingList);
 // ✅ Download Shopping List as PDF
 router.get("/download", shoppingListController.downloadShoppingList);
 
+// ✅ Add expired items to shopping list (New route)
+router.post("/add-expired-items", shoppingListController.addExpiredItems);
+
+// ✅ New Route: Fetch expired items from inventory
+router.get("/expired", shoppingListController.getExpiredItems);
+
 module.exports = router;

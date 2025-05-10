@@ -86,23 +86,6 @@ const Reminder = () => {
 
   return (
     <div className="reminder-container">
-      <h2 className="reminder-title">Seasonal Reminders</h2>
-      {reminders.filter(reminder => !handledItems.includes(reminder.item) && reminder.message).length === 0 ? (
-        <p className="no-reminders-message">No active seasonal reminders.</p>
-      ) : (
-        <ul className="reminder-list">
-          {reminders
-            .filter(reminder => !handledItems.includes(reminder.item) && reminder.message) // Filter out reminders without a message
-            .map((reminder, index) => (
-              <li key={`${reminder._id}-${index}`} className="reminder-item"> {/* Ensure unique key using _id and index */}
-                <span className="reminder-message">{reminder.message}</span>
-                <button className="add-button" onClick={() => handleAction(reminder._id, reminder.item, "add")}>Add</button>
-                <button className="skip-button" onClick={() => handleAction(reminder._id, reminder.item, "skip")}>Skip</button>
-              </li>
-            ))}
-        </ul>
-      )}
-
       <h2 className="reminder-title">Non-Expiring Item Reminders</h2>
       {nonExpiringReminders.length > 0 ? (
         nonExpiringReminders.map((reminder) => (

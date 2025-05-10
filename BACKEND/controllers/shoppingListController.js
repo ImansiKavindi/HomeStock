@@ -1,6 +1,7 @@
 const ShoppingList = require("../models/shoppingList");
 const SeasonalReminder = require("../models/seasonalReminder");
 const Reminder = require("../models/tempReminderModel");
+const ProductModel = require("../models/ProductModel"); // Access expired products
 const PDFDocument = require("pdfkit");
 
 // ✅ Add item to shopping list (Allows duplicates for seasonal items)
@@ -134,5 +135,50 @@ exports.downloadShoppingList = async (req, res) => {
         doc.end();
     } catch (error) {
         res.status(500).json({ error: error.message });
+    }
+};
+
+// ✅ Add already expired items to the shopping list
+exports.addExpiredItems = async (req, res) => {
+    try {
+        const today = new Date();
+
+        // ✅ Get expired items from inventory
+        const expiredItems = await ProductModel.find({ Expire_Date: { $lt: today } });
+
+        if (expiredItems.length === 0) {
+            return res.status(200).json({ success: true, message: "No expired items found" });
+        }
+
+        let addedCount = 0;
+        let shoppingList = await ShoppingList.findOne({ status: "pending" });
+
+        if (!shoppingList) {
+            shoppingList = new ShoppingList({ items: [], status: "pending" });
+        }
+
+        for (const item of expiredItems) {
+            // ✅ Check if already in shopping list
+            if (!shoppingList.items.includes(item.P_name)) {
+                shoppingList.items.push(item.P_name);
+                addedCount++;
+            }
+        }
+
+        await shoppingList.save();
+        res.status(200).json({ success: true, message: `${addedCount} expired items added to the shopping list` });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Error adding expired items" });
+    }
+};
+
+// ✅ Fetch expired items from inventory
+exports.getExpiredItems = async (req, res) => {
+    try {
+        const today = new Date();
+        const expiredItems = await ProductModel.find({ Expire_Date: { $lt: today } }, 'P_name Expire_Date');
+        res.status(200).json({ success: true, expiredItems });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Error fetching expired items" });
     }
 };

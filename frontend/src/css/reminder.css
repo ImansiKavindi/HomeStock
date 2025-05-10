@@ -142,4 +142,31 @@
 }
  
 
- 
+.reminder-container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .reminder-card {
+    background: #f2f2f2;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  }
+  
+  .reminder-buttons {
+    margin-top: 10px;
+  }
+  
+  .reminder-buttons button {
+    margin-right: 10px;
+    padding: 6px 12px;
+  }
+  
+  .go-to-shopping-btn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-weight: bold;
+  }
+  
