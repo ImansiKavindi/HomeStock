@@ -6,5 +6,6 @@ const BudgetController = require("../controllers/BudgetControllers");
 router.post("/set", BudgetController.setBudget);
 router.get("/", BudgetController.getBudget);
 router.get("/status", BudgetController.getBudgetStatus);
+router.get("/report", BudgetController.generateBudgetReport);
 
 module.exports = router; 

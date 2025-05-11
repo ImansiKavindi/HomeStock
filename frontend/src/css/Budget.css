@@ -249,6 +249,32 @@
   color: #757575;
 }
 
+.report-section {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.download-report-btn {
+  background: linear-gradient(to right, #3f51b5, #5c6bc0);
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  cursor: pointer;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.download-report-btn:hover {
+  background: linear-gradient(to right, #303f9f, #3949ab);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .budget-content {
