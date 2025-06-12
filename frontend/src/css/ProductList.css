@@ -57,7 +57,7 @@
   }
 
   
-  .add-product-btn, .download-report-btn {
+  .add-product-btn, .report-btn {
     background: linear-gradient(to right, #003b00be ,#5ef466a6);
     color: white;
     padding: 10px 20px;
@@ -73,10 +73,22 @@
 
   .add-product-btn{
     margin-right: 64%;
+     padding-top: 20px;
+    padding-bottom: 25px;
+    padding-right: 10px;
+    width: 12rem;
+    height: 2.5rem;
     display: flex; /* Space only between these two buttons */
   }
  
-  
+   .report-btn{
+    margin-right: 14%;
+    padding-top: 20px;
+    padding-bottom: 25px;
+    width: 15rem;
+    height: 2.5rem;
+    display: flex; /* Space only between these two buttons */
+  }
 
   .add-product-btn:hover , .download-report-btn:hover {
     background-color: #033c1a;

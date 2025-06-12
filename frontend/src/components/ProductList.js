@@ -313,7 +313,7 @@ doc.line(200, 70, 200, 82); // Right border
 
           {/* Report Section */}
           <div className="report-section">
-            <button className="download-report-btn" onClick={generateReport}>
+            <button className="report-btn" onClick={generateReport}>
               <FaDownload /> Download Report
             </button>
           </div>
