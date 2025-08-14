@@ -5,16 +5,16 @@
    
   }
 
-
-
 /* Dashboard Layout */
 .dashboard-content {
   margin-left: 350px;
+  
   display: grid;
   grid-template-columns: repeat(2, 1fr); /* Two cards per row */
   gap: 40px 150px; 
-  padding: 20px;
-  padding-left: 50px;
+  margin-top: 50px;
+  padding: 40px;
+  padding-left: 100px;
   justify-items: center;
 }
 

@@ -85,7 +85,7 @@
 }
 
 /* List Items */
-ul {
+.shopping-list-section ul {
   list-style: none;
   padding: 0;
   margin-top: 20px;
@@ -114,7 +114,7 @@ ul::-webkit-scrollbar-thumb {
   border-radius: 10px;
 }
 
-li {
+.shopping-list-section li {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -619,6 +619,14 @@ li .Cancel {
     padding: 10px;
   }
 
+  /* Fix typing caret alignment in input fields */
+.shopping-list-section input,
+.shopping-list-section .quantities-panel input {
+  text-align: left;       /* Align typing text to left */
+  caret-color: #4CAF50;   /* Optional: makes caret color match theme */
+}
+
+
   .Add, .Save, .Cancel, .ready-to-shop-btn, .reminders-btn, .add-item-btn, .edit-selected-btn,
   .remove-selected-btn, .clear-list-btn, .download-pdf-btn, .quantities-btn {
     padding: 10px 14px;
@@ -627,7 +635,7 @@ li .Cancel {
     width: 100%;
   }
   
-  .quantities-panel {
+  .shopping-list-section  .quantities-panel {
     padding: 15px !important;
   }
   

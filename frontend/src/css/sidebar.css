@@ -1,6 +1,6 @@
 .side-navbar {
   width: 260px;
-  background-image: url('../images/sidebg.jpeg');
+  
   background-repeat: no-repeat;
   background-size: 150% 100%;
   padding: 8px;
@@ -25,7 +25,21 @@
 }
 
 .side-navbar li {
-  margin: 1px 10;
+ 
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  font-size: 18px;
+  transition: all 0.3s ease;
+  width: 80%;
+  margin-bottom: 18px;
+  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.75);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  position: relative;
+  border-left: 4px solid #4CAF50;
+
 }
 
 .side-navbar a {
